@@ -189,4 +189,8 @@ pyrightconfig.json
 # pdf
 *.pdf
 
+# Input, Output
+whatever/model/LSTM_pipeline/Input/
+whatever/model/LSTM_pipeline/Output/
+
 # End of https://www.toptal.com/developers/gitignore/api/jupyternotebooks,python,dotenv
