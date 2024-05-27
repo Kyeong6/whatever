@@ -187,6 +187,6 @@ poetry.toml
 pyrightconfig.json
 
 # pdf
-.pdf
+*.pdf
 
 # End of https://www.toptal.com/developers/gitignore/api/jupyternotebooks,python,dotenv
