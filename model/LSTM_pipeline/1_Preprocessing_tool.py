@@ -1,5 +1,10 @@
 import importlib
 import argparse
+import time
+
+# 시간 측정 시작
+start = time.time()
+
 preprocessing = importlib.import_module('Data_preprocessing')
 
 def parse_arguments():
@@ -52,3 +57,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# 종료와 함께 수행시간 출력
+print(f"{time.time()-start: .4f} sec")
