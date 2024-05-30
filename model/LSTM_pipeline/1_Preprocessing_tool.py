@@ -1,9 +1,16 @@
 import importlib
 import argparse
 import time
+import os
+import psutil
 
 # 시간 측정 시작
 start = time.time()
+
+# 현재 프로세스의 ID 가져오기
+pid = os.getpid()
+py = psutil.Process(pid)
+
 
 preprocessing = importlib.import_module('Data_preprocessing')
 
@@ -60,3 +67,10 @@ if __name__ == '__main__':
 
 # 종료와 함께 수행시간 출력
 print(f"{time.time()-start: .4f} sec")
+
+# CPU 및 MEM 사용량 출력
+cpu_usage = os.popen("ps aux | grep " + str(pid) + " | grep -v grep | awk '{print $3}'").read().strip()
+memory_usage = round(py.memory_info()[0] / 2.**30, 2)
+
+print("cpu usage\t\t:", cpu_usage, "%")
+print("memory usage\t\t:", memory_usage, "GB")
