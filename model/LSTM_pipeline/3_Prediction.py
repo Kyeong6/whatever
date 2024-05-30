@@ -1,6 +1,10 @@
 import importlib
 import argparse
 import pandas as pd
+import time
+
+# 시간 측정 시작
+start = time.time()
 
 preprocessing = importlib.import_module('Data_preprocessing')
 abnormal_detection = importlib.import_module('Abnormal_detection')
@@ -87,6 +91,9 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# 종료와 함께 수행시간 출력
+print(f"{time.time()-start: .4f} sec")
 
 
 
