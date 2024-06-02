@@ -130,6 +130,27 @@ def lstm_arch(x_train, y_train, periods, epochs, batch_size):
     
     return lstm_model
 
+# # 모델 성능 평가
+# def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
+#     # 예측
+#     preds = lstm_model.predict(x_test)
+#     # 원래 값으로 변환
+#     preds = sc.inverse_transform(preds)
+    
+#     # 실제값과 예측값을 비교하기 위한 데이터프레임 생성
+#     predictions_plot = pd.DataFrame(columns=['actual', 'prediction'])
+#     predictions_plot['actual'] = test.iloc[0:len(preds), 0]
+#     predictions_plot['prediction'] = preds[:, 0]
+    
+#     # RMSE 계산
+#     mse = MeanSquaredError()
+#     mse.update_state(np.array(predictions_plot['actual']), np.array(predictions_plot['prediction']))
+#     RMSE = np.sqrt(mse.result().numpy())
+    
+#     # 그래프
+#     return (predictions_plot.plot(figsize=(15, 5), 
+#                                 title=f'lstm performance\nepochs={epochs}, batch size={str(batch_size)}, RMSE={str(round(RMSE, 4))}'))
+
 # 모델 성능 평가
 def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
     # 예측
@@ -147,19 +168,46 @@ def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
     mse.update_state(np.array(predictions_plot['actual']), np.array(predictions_plot['prediction']))
     RMSE = np.sqrt(mse.result().numpy())
     
-    # 그래프
-    return (predictions_plot.plot(figsize=(15, 5), 
-                                title=f'lstm performance\nepochs={epochs}, batch size={str(batch_size)}, RMSE={str(round(RMSE, 4))}'))
+    # 그래프 생성 및 세부사항 출력
+    plt.figure(figsize=(15,5))
+    plt.plot(predictions_plot['actual'], labe='Actual')
+    plt.plot(predictions_plot['prediction'], label='Prediction')
+    plt.title(f'LSTM Performance\nEpochs={epochs}, Batch Size={batch_size}, RMSE={round(RMSE, 4)}')
+    plt.xlabel('Time')
+    plt.ylabel('Values')
+    plt.legend()
+    output_path = './Output/Learning_lstm'
+    os.makedirs(output_path, exist_ok=True)
+    plt.savefig(f'{output_path}/lstm_performance_graph.tiff', format='tiff')
+
+    # 그래프에 대한 세부 정보 출력
+    print("Graph Analysis:")
+    print(f"X-axis: Time with {len(predictions_plot)} points")
+    print(f"Y-axis: Values ranging from {predictions_plot['actual'].min()} to {predictions_plot['actual'].max()}")
+    print(f"Scale: 1 unit on Y-axis represents value magnitude")
+    
+    return predictions_plot
+
+
+# # 스케일러, 모델, 그래프 저장
+# def save_output(sc, lstm_model, plot):
+#     # 출력 폴더 생성
+#     output_path = './Output/Learning_lstm'
+#     os.makedirs(output_path,exist_ok=True)
+
+#     dump(sc, f'{output_path}/scaler.pkl') # scaler 저장
+#     lstm_model.save(f'{output_path}/lstm_model.h5') # 모델 저장
+#     plt.savefig(f'{output_path}/lstm_performance_graph.tiff') # 그래프 저장
+
 
 # 스케일러, 모델, 그래프 저장
-def save_output(sc, lstm_model, plot):
+def save_output(sc, lstm_model):
     # 출력 폴더 생성
     output_path = './Output/Learning_lstm'
     os.makedirs(output_path,exist_ok=True)
 
     dump(sc, f'{output_path}/scaler.pkl') # scaler 저장
     lstm_model.save(f'{output_path}/lstm_model.h5') # 모델 저장
-    plt.savefig(f'{output_path}/lstm_performance_graph.tiff') # 그래프 저장
 
 
 # 모델 학습 (에포크=700, 배치 사이즈=32)
