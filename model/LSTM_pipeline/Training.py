@@ -53,7 +53,7 @@ def train_test_split(df):
 
     # 데이터 분리 결과 출력
     print(f"Train data Size: {len(train)} rows")
-    print(f"Test data Size: {len(train)} rows")
+    print(f"Test data Size: {len(test)} rows")
 
     return train, test
 
@@ -170,7 +170,7 @@ def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
     
     # 그래프 생성 및 세부사항 출력
     plt.figure(figsize=(15,5))
-    plt.plot(predictions_plot['actual'], labe='Actual')
+    plt.plot(predictions_plot['actual'], labeㅣ='Actual')
     plt.plot(predictions_plot['prediction'], label='Prediction')
     plt.title(f'LSTM Performance\nEpochs={epochs}, Batch Size={batch_size}, RMSE={round(RMSE, 4)}')
     plt.xlabel('Time')

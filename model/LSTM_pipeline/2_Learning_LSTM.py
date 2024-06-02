@@ -55,7 +55,7 @@ def main():
         print(train.head())
         print("Test data example:")
         print(test.head())
-
+        
         # 데이터 스케일링
         sc = training.data_scaling(train)
 
