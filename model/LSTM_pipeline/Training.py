@@ -51,6 +51,10 @@ def train_test_split(df):
     train = df.iloc[:train_size]
     test = df.iloc[train_size:]
 
+    # 데이터 분리 결과 출력
+    print(f"Train data Size: {len(train)} rows")
+    print(f"Test data Size: {len(train)} rows")
+
     return train, test
 
 # 데이터 스케일링
