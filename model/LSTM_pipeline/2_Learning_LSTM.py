@@ -49,6 +49,13 @@ def main():
         # 학습 데이터 / 테스트 데이터 분할
         train, test = training.train_test_split(df)
 
+        # 학습 / 테스트 데이터 추가 확인
+        print("Train and Test data split done.")
+        print("Train data example:")
+        print(train.head())
+        print("Test data example:")
+        print(test.head())
+
         # 데이터 스케일링
         sc = training.data_scaling(train)
 
