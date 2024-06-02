@@ -170,7 +170,7 @@ def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
     
     # 그래프 생성 및 세부사항 출력
     plt.figure(figsize=(15,5))
-    plt.plot(predictions_plot['actual'], labeㅣ='Actual')
+    plt.plot(predictions_plot['actual'], label='Actual')
     plt.plot(predictions_plot['prediction'], label='Prediction')
     plt.title(f'LSTM Performance\nEpochs={epochs}, Batch Size={batch_size}, RMSE={round(RMSE, 4)}')
     plt.xlabel('Time')
@@ -237,7 +237,7 @@ def training(window_size, periods):
     plot = lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size)
 
     # 스케일러, 모델, 그래프 저장
-    save_output(sc, lstm_model, plot)
+    save_output(sc, lstm_model)
 
 
 if __name__ == "__main__":

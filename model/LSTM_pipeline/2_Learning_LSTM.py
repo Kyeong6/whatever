@@ -70,7 +70,8 @@ def main():
         plot = training.lstm_performance(lstm_model, sc, x_test, test, args.epochs, args.batch_size)
 
         # 스케일러, 모델, 그래프 저장
-        training.save_output(sc, lstm_model, plot)
+        # training.save_output(sc, lstm_model, plot)
+        training.save_output(sc, lstm_model)
         
 if __name__ == '__main__':
     main()
