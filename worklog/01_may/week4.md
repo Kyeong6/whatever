@@ -106,14 +106,15 @@ parser.add_argument("-v", "--verbose", action="store_true", default=10)
 ## 결측치 채우기 : 선형 보간(Linear interpolation)
 
 <aside>
-💡 **선형 보간법**은 1차원 직선상에서 두 점의 값이 주어졌을 때 
+💡 선형 보간법은 1차원 직선상에서 두 점의 값이 주어졌을 때 
 그 사이의 값을 추정하기 위해 직선 거리에 따라 선형적으로 계산(비례식)하는 방법이다.
 
 </aside>
 
 ### 필요한 상황
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/f833975f-2043-452a-a0d4-dd8193a78ea0/Untitled.png)
+![week4_01](https://github.com/Kyeong6/whatever/assets/100195725/9bc95d9f-bd9d-456a-a0c2-5485ebf6992c)
+
 
 위 그림처럼 직선 위에 점 a,b가 존재하고 이들 사이에 점 c가 존재한다. 
 
@@ -121,17 +122,20 @@ parser.add_argument("-v", "--verbose", action="store_true", default=10)
 
 ### 적용 방법
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/f833975f-2043-452a-a0d4-dd8193a78ea0/Untitled.png)
+![week4_02](https://github.com/Kyeong6/whatever/assets/100195725/16c62f7b-b7b0-49a3-be4a-fb55167fe0ae)
+
 
 - 점 c는 `a와 b 사이 어딘가` 에 있는 점이라는 사실만 알 수 있다.
 - 점 c의 `x 좌표를 임의로 지정`하면 선형 보간법을 사용하여 점 c의 y좌표까지 알아낼 수 있다.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/c9e1062c-56f0-48ec-af43-1b2c636b25ea/Untitled.png)
+![week4_03](https://github.com/Kyeong6/whatever/assets/100195725/eaa886b0-68dc-4248-ae29-95217dc2ade7)
+
 
 - 해당 예시에서는 점 c의 x좌표를 4.9로 임의로 정함
 - 점 a,b,c의 x좌표는 다음과 같다 → (2, 4.9, 7.4)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/511b67b7-9524-44e6-8f73-08992c855de0/Untitled.png)
+![week4_04](https://github.com/Kyeong6/whatever/assets/100195725/cb2e09d0-a643-4652-a8e3-d82593a34157)
+
 
 - 이해를 돕기위해 일렬로 늘어뜨리면 다음과 같은 그림이다.
 - d(전체 거리) = b - a (x좌표)
@@ -142,7 +146,8 @@ parser.add_argument("-v", "--verbose", action="store_true", default=10)
 - d1 / d = 0.58이므로 백분율로 환산하면 58%를 의미
 - 즉, 전체거리에서 58%만큼 움직이면 c가 나온다는 의미
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/97fb20ed-d4de-4b62-aff5-67a0d14d424e/Untitled.png)
+![week4_05](https://github.com/Kyeong6/whatever/assets/100195725/737518fe-6add-42ac-a9fe-c7a4a0502778)
+
 
 - 배율을 구하였다면 c의 y좌표를 구할 수 있다
 - 전체거리(d) = b - a (y좌표)
@@ -151,8 +156,8 @@ parser.add_argument("-v", "--verbose", action="store_true", default=10)
 ## 데이터의 정상성
 
 <aside>
-💡 **시계열 데이터를 분석하는 목적**
-1. 시간에 따른 데이터의 패턴 파악하기 위함(계절성, 추세와 같은 변동성)
+💡 시계열 데이터를 분석하는 목적<br/></br>
+1. 시간에 따른 데이터의 패턴 파악하기 위함(계절성, 추세와 같은 변동성)<br/></br>
 2. 분석된 패턴에 기반한 예측 모형을 통해 시계열 예측을 하기 위함
 
 </aside>
@@ -182,28 +187,33 @@ parser.add_argument("-v", "--verbose", action="store_true", default=10)
 
 - 정상성
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/dcc7562a-c8db-4572-84aa-fbbe486bfe5a/Untitled.png)
+![week4_06](https://github.com/Kyeong6/whatever/assets/100195725/6f372a38-3ae2-4905-b06c-04c2af6484fa)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/5c85b78c-5eb0-4974-b772-37fad745c011/Untitled.png)
+
+![week4_07](https://github.com/Kyeong6/whatever/assets/100195725/e183f31e-83b1-43fe-874f-f9da41b0aa94)
+
 
 지그재그 모양을 수평으로 막 그린 형태
 
 - 정상성 x
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/4faaca08-31d8-41cc-add2-562984e5f9fc/Untitled.png)
+![week4_08](https://github.com/Kyeong6/whatever/assets/100195725/465f04b2-6ec8-4962-aeef-8f163d03c576)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/d02a42a8-8ddd-4bbe-9058-8ac4b50ba968/Untitled.png)
+
+![week4_09](https://github.com/Kyeong6/whatever/assets/100195725/0de6e9fb-b810-4052-b1fe-66d7c5fb997b)
+
 
 a,c는 추세가 존재
 
 ## nvidia-smi 확인
 
 <aside>
-💡 nvidia에서 제공하는 GPU driver를 OS에 맞게 설치해야하는데, GPU driver 설치 후에 정보를 확인할 수 있도록 하는 명령어가 **nvidia-smi**
+💡 nvidia에서 제공하는 GPU driver를 OS에 맞게 설치해야하는데, GPU driver 설치 후에 정보를 확인할 수 있도록 하는 명령어가 nvidia-smi
 
 </aside>
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/09233fcf-7838-4a84-a2dc-7d1913295f68/Untitled.png)
+![week4_10](https://github.com/Kyeong6/whatever/assets/100195725/995195af-2bbe-415d-ba45-c6eaa9a049e2)
+
 
 1. Driver version : 현재 설치되어 사용하고 있는 nvidia GPU의 driver version
 2. CUDA version : 현재 사용하고 있는 driver와 호환이 잘 되는 CUDA의 version, 추천의 의미이지 현재 설치되어 사용하고 있는 CUDA version x
@@ -233,7 +243,8 @@ a,c는 추세가 존재
     6-4. MIG M. : NVIDIA GPU를 slice하는 기능으로, MIG M은 MIG-Mode의 약자이고, MIG는 Multi-Instance GPU의 약자이다. CUDA application을 실행 시 최대 7개의 개별 GPU instance로 안전하게 분할하여 여러 사용자에게 별도으이 GPU를 제공하여 작업을 가속화하는데 도움을 줌, 여러 개의 instance를 지원하는 MIG는 NVIDIA A100 모델에서만 지원이 되고 이외에도 필요조건 존재 
     
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/f4a13828-6596-4708-bc80-7160ced09924/Untitled.png)
+![week4_11](https://github.com/Kyeong6/whatever/assets/100195725/76f256d2-b029-4199-ba47-62f16bb8fc22)
+
 
 - GPU 0 ~ 7번 까지의 Process ID 등 현재 사용 중인 정보 보여줌
 - GPU의 번호에 따라 PID를 확인하여 GPU가 실행 중인 process 확인이 가능
@@ -259,7 +270,8 @@ LSTM은 긴 의존 기간의 문제를 피하기 위해 명시적으로 설계�
 
 **RNN**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/b307d052-36b5-4dd7-8625-4c96e0ca1756/Untitled.png)
+![week4_12](https://github.com/Kyeong6/whatever/assets/100195725/5587e811-2c9c-4ac8-a9b9-53edaf90b9d4)
+
 
 RNN은 neural network 모듈(green box)을 반복시키는 체인과 같은 형태를 하고 있다. 기본적인 RNN에서 이렇게 반복되는 모듈은 굉장히 단순한 구조를 가지고 있다. 
 
@@ -267,13 +279,15 @@ RNN은 neural network 모듈(green box)을 반복시키는 체인과 같은 형�
 
 **LSTM**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/bda23385-64b8-4bb9-825f-9cc8e23442e7/Untitled.png)
+![week4_13](https://github.com/Kyeong6/whatever/assets/100195725/6828e798-99ba-47cc-ba87-e93e452709ad)
+
 
 LSTM도 RNN과 같이 체인 구조를 가지고 있지만, 각 반복 모듈은 다른 구조를 가지고 있다. 4개의 layer가 **특별한 방식**으로 서로 정보를 주고 받도록 설계되어 있다. 
 
 **이해를 돕기위한 기호 설명**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/6903694a-2ab4-436b-a75c-bded2cfba59b/Untitled.png)
+![week4_14](https://github.com/Kyeong6/whatever/assets/100195725/697d7c50-1d92-40dc-a9f1-21cdb7871d21)
+
 
 각 선(Line) : 한 노드의 output을 다른 노드의 input으로 vector 전체를 보내는 흐름을 나타낸다. 
 
@@ -287,13 +301,15 @@ LSTM도 RNN과 같이 체인 구조를 가지고 있지만, 각 반복 모듈은
 
 ### LSTM 아이디어
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/da627f34-09ce-4cde-81a8-f8bd691f4c47/Untitled.png)
+![week4_15](https://github.com/Kyeong6/whatever/assets/100195725/e60af677-0be7-45e0-8e34-db87dd48e46f)
+
 
 LSTM의 핵심은 **cell state**, 위 그림에서 수평으로 그어진 윗 선에 해당한다.
 
 cell state는 컨베이어 벨트와 같아서, 작은 linear interaction만을 적용시키면서 전체 체인을 계속 구동시킨다. 정보가 전혀 바뀌지 않고 그대로 흐르게만 하는 것은 매우 쉽게 할 수 있다.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/543843f7-db69-466c-84c5-7fd2b02aba35/Untitled.png)
+![week4_16](https://github.com/Kyeong6/whatever/assets/100195725/9b6380a9-6192-4804-b80c-b823d4f0cf85)
+
 
 LSTM은 cell state에 뭔가를 더하거나 없앨 수 있는 능력이 존재하는데, 이를 **gate**라고 불리는 구조에 의해서 조심스럽게 제어된다.
 
@@ -315,7 +331,8 @@ h_(t-1) : 이전 단어
 
 x_t : 새로운 단어
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/e821091d-e8af-4c98-bd69-cb7eb7f9b7e4/Untitled.png)
+![week4_17](https://github.com/Kyeong6/whatever/assets/100195725/a24b3f42-61e4-47f0-bb92-cbe72f25d9ab)
+
 
 다음 단계는 앞으로 들어오는 새로운 정보 중 어떤 것을 cell state에 저장할 것인 지를 정한다. 먼저 input gate lyaer라고 불리는 sigmoid layer가 어떤 값을 업데이트할 지 정한다. 그 다음에 tanh layer가 새로운 후보 값들인 ~C_t라는 vector를 만들고, cell state에 더할 준비를 한다. 이렇게 두 단계에서 나온 정보를 합쳐서 state를 업데이트할 재료를 만들게 된다. 
 
@@ -323,7 +340,8 @@ x_t : 새로운 단어
 
 기존 주어의 성별을 잊어버리기로 했고, 그 대신 새로운 주어의 성별 정보를 cell state에 더하고 싶을 것이다.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/f22e37c9-5afa-411a-ac89-f49342f3399e/Untitled.png)
+![week4_18](https://github.com/Kyeong6/whatever/assets/100195725/17d42c8d-95f7-4591-94cd-3f713e27fe12)
+
 
 과거 state인 C_(t-1)를 업데이트해서 새로운 cell state인 C_t를 만들 것이다. 이미 이전 단계에서 어떤 값을 얼마나 업데이트해야 할 지 정해놨으므로 해당 단계에서는 실천만 하면 된다. 
 
@@ -333,7 +351,8 @@ x_t : 새로운 단어
 
 실제로 이전 주어의 성별 정보를 없애고, 새로운 정보를 더하게 되는데 이는 지난 단계들에서 다 정했던 것들을 실천만 하는 단계임을 다시 확인할 수 있다.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/638b4281-56f3-4a00-9438-e62510185fb7/Untitled.png)
+![week4_19](https://github.com/Kyeong6/whatever/assets/100195725/7db32b0d-9cdf-48f3-8cac-7dd0b88cb1eb)
+
 
 마지막으로 무엇을 output으로 내보낼 지 정하는 일이 남았다. output은 cell state를 바탕으로 필터된 값이 될 것이다. 가장 먼저, sigmoid layer에 input 데이터를 태워서 cell state의 어느 부분을 output으로 내보낼 지를 정한다. 그리고 나서 cell state를 tanh layer에 태워서 -1과 1사이의 값을 받은 뒤에 방금 전에 계산한 sigmoid gate의 output과 곱해준다. 이렇게 하면 output으로 보내고자 하는 부분만 내보낼 수 있다.
 
@@ -341,8 +360,9 @@ x_t : 새로운 단어
 
 주어를 input으로 받았으므로 주어 다음에 오게 될 예측값인 output으로 적절한 답은 아마도 동사 개념의 무언가가 될 것이다. 예를 들어서 최종적인 output은 앞에서 본 주어가 단수형인지 복수형인지에 따라 그 형태가 달라질 수 도 있는 것이다.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/68b5bfbe-a44e-405d-9742-00fffc13162b/Untitled.png)
+![week4_20](https://github.com/Kyeong6/whatever/assets/100195725/4030bc49-c654-49ff-8425-23e34da00ece)
+
 
 ### 정리
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/92b17cc5-c182-4a16-9872-b5559dd876a5/Untitled.png)
+![week4_21](https://github.com/Kyeong6/whatever/assets/100195725/13095026-e75f-4835-a5d5-7f0739ce2f9a)
