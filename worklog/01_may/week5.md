@@ -16,9 +16,11 @@
 
 ### 실데이터 전처리
 
-![week5_01](./images/week5_01.png)
+<img width="895" alt="week5_01" src="https://github.com/Kyeong6/whatever/assets/100195725/a082f718-ff57-4d9a-afca-8f1e11f6b987">
 
-![week5_02](./images/week5_02.png)
+
+<img width="843" alt="week5_02" src="https://github.com/Kyeong6/whatever/assets/100195725/ca73b057-fa7f-4ea9-a9a9-a9fbb0e7d303">
+
 
 
 **설명**
@@ -55,7 +57,8 @@ python 3_Prediction.py -f ./Input/jangmyeong.csv -a
 
 해당 데이터를 LSTM 실행한 결과 이상치가 존재하지 않았다.
 
-![week5_03](./images/week5_03.png)
+![week5_03](https://github.com/Kyeong6/whatever/assets/100195725/2bfb0543-7626-46e8-8c5c-3853feceb42e)
+
 
 
 ## 5/30
@@ -89,19 +92,22 @@ print(f"{time.time()-start: .4f} sec")
 
 - 1_Preprocessing_tool.py
 
-![week5_04](./images/week5_04.png)
+![week5_04](https://github.com/Kyeong6/whatever/assets/100195725/738b36f5-c99a-43a9-86ad-667e83c172c9)
+
 
 → 31.1337 sec
 
 - 2_Learning_LSTM.py
 
-![week05_05](./images/week5_05.png)
+![week5_05](https://github.com/Kyeong6/whatever/assets/100195725/0aa7efee-7234-4cda-a2be-5a9820af4229)
+
 
 → 17.6853 sec
 
 - 3_Prediction.py
 
-![week05_06](./images/week5_06.png)
+![week5_06](https://github.com/Kyeong6/whatever/assets/100195725/d2ec9a7e-27ef-4f64-8e1e-abd935ec0a04)
+
 
 → 18.2704 sec
 
@@ -159,15 +165,18 @@ print("memory usage\t\t:", memory_usage, "GB")
 
 - 1_Preprocessing_tool.py
 
-![week05_07](./images/week5_07.png)
+![week5_07](https://github.com/Kyeong6/whatever/assets/100195725/4f13f4ef-1b36-4a8c-a1f3-69b86134393b)
+
 
 - 2_Learning_LSTM.py
 
-![week5_08](./images/week5_08.png)
+![week5_08](https://github.com/Kyeong6/whatever/assets/100195725/241ca59c-35a5-4e8e-ae78-b4cb135ba98c)
+
 
 - 3_Prediction.py
 
-![week5_09](./images/week5_09.png)
+![week5_09](https://github.com/Kyeong6/whatever/assets/100195725/8bfe9731-0f84-4a20-b81d-dafc82ae03f4)
+
 
 시간 측정 부분에서 언급했듯이 첫 번째 실행이 아닌 재실행이므로 2_Learning_LSTM.py의 사용량이 86.3%로 나왔지만 새로운 데이터를 첫 번째로 실행할 경우 90%가 넘을 것이라고 예상된다.
 
@@ -212,7 +221,8 @@ print(test.head())
 
 위의 코드를 작성하여 얻은 출력은 다음과 같다.
 
-![week5_10](./images/week5_10.png)
+![week5_10](https://github.com/Kyeong6/whatever/assets/100195725/99003012-c72d-4b8e-8327-d47930062413)
+
 
 데이터셋 행의 총 개수인 367에 0.7을 곱하면 256이 나오므로 데이터셋이 잘 분리되고 있음을 알 수 있다.
 
@@ -222,9 +232,11 @@ print(test.head())
 
 tiff 파일로 그래프가 저장이 되는데, 이를 잘 파악하기 위해 그래프 설명과 추가적인 출력문장을 설정하였다.
 
-![week5_11](./images/week5_11.png)
+<img width="850" alt="week5_11" src="https://github.com/Kyeong6/whatever/assets/100195725/f2437dc0-397a-4474-aaaa-3a4b084b3880">
 
-![week5_12](./images/week5_12.png)
+
+<img width="850" alt="week5_12" src="https://github.com/Kyeong6/whatever/assets/100195725/4493ae7c-9fbe-4353-a9ec-791bdf47580c">
+
 
 Training.py에서 위의 코드를 새롭게 작성한 부분은 다음과 같다.
 
@@ -317,10 +329,12 @@ Training.py에서 위의 코드를 새롭게 작성한 부분은 다음과 같�
 
 - lstm_performance_graph.tiff
 
-![week5_13](./images/week5_13.png)
+![week5_13](https://github.com/Kyeong6/whatever/assets/100195725/6517fe21-2809-4f31-a195-c88452f723f3)
+
 
 - 2_Learning_LSTM.py
 
-![week5_14](./images/week5_14.png)
+![week5_14](https://github.com/Kyeong6/whatever/assets/100195725/889ac4e2-558c-419a-bb76-7ea32d2069b9)
+
 
 위 결과값을 간단하게 해석하자면, 전반적으로 데이터의 변동성을 반영하지 못한다는 문제점이 존재한다.
