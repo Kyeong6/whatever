@@ -184,7 +184,14 @@ def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
     print("Graph Analysis:")
     print(f"X-axis: Time with {len(predictions_plot)} points")
     print(f"Y-axis: Values ranging from {predictions_plot['actual'].min()} to {predictions_plot['actual'].max()}")
-    print(f"Scale: 1 unit on Y-axis represents value magnitude")
+    
+    # 잔차 분석
+    residuals = predictions_plot['actual'] - predictions_plot['prediction']
+    print("\nResiduals Analysis:")
+    print(f"Mean Residual: {residuals.mean()}")
+    print(f"Variance of Residuals: {residuals.var()}")
+    print(f"Min Residual: {residuals.min()}")
+    print(f"Max Residual: {residuals.max()}")
     
     return predictions_plot
 
