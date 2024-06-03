@@ -185,6 +185,14 @@ def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
     print(f"X-axis: Time with {len(predictions_plot)} points")
     print(f"Y-axis: Values ranging from {predictions_plot['actual'].min()} to {predictions_plot['actual'].max()}")
     
+    # 예측 결과 통계 출력
+    print("\nPrediction Statistics:")
+    print(f"Mean Actual Value: {predictions_plot['actual'].mean()}")
+    print(f"Mean Predicted Value: {predictions_plot['prediction'].mean()}")
+    print(f"Variance of Actual Values: {predictions_plot['actual'].var()}")
+    print(f"Variance of Predicted Values: {predictions_plot['prediction'].var()}")
+    print(f"RMSE: {round(RMSE, 4)}")
+
     # 잔차 분석
     residuals = predictions_plot['actual'] - predictions_plot['prediction']
     print("\nResiduals Analysis:")
@@ -192,6 +200,8 @@ def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
     print(f"Variance of Residuals: {residuals.var()}")
     print(f"Min Residual: {residuals.min()}")
     print(f"Max Residual: {residuals.max()}")
+
+
     
     return predictions_plot
 
