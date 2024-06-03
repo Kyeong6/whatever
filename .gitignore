@@ -187,7 +187,7 @@ poetry.toml
 pyrightconfig.json
 
 # pdf
-*.pdf
+model/LSTM_pipeline/Guideline.pdf
 
 # Input, Output
 model/LSTM_pipeline/Input/
