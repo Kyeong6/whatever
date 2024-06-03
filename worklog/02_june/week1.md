@@ -73,14 +73,17 @@ Check 디렉토리를 생성하여 학습 / 테스트 데이터를 저장
 
 - check_train_data.csv
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/5fe90ef9-4dd8-400b-9b20-3d919ebe3339/Untitled.png)
+![week6_01](https://github.com/Kyeong6/whatever/assets/100195725/361a3e9c-b5ca-47b0-8401-c6cc1e12794e)
+
 
 - check_test_data.csv
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/4cdb2299-027c-4870-8cf7-f7e28460ce49/Untitled.png)
+![week6_02](https://github.com/Kyeong6/whatever/assets/100195725/13dbd539-3311-42e4-aae7-972d987f18f5)
+
 
 - terminal 출력
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/44e64da6-aafd-447b-8967-dc65eca28f22/Untitled.png)
+![week6_03](https://github.com/Kyeong6/whatever/assets/100195725/5127c0b8-2e4f-4562-adbf-4ade07dd3b58)
+
 
 문제없이 데이터셋이 분할되고 있음을 알 수 있다.
