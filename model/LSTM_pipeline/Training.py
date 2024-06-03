@@ -201,6 +201,11 @@ def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
     print(f"Min Residual: {residuals.min()}")
     print(f"Max Residual: {residuals.max()}")
 
+    # 이상치 확인
+    outliers = residuals[np.abs(residuals) > 2 * residuals.std()]
+    print(f"\nNumber of Outliers: {len(outliers)}")
+    print(f"Outliers:\n{outliers}")
+
 
     
     return predictions_plot
