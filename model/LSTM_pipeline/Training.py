@@ -51,6 +51,10 @@ def train_test_split(df):
     train = df.iloc[:train_size]
     test = df.iloc[train_size:]
 
+    # 학습 데이터 / 테스트 데이터 확인을 위한 저장
+    train.to_csv('./Check/check_train_data.csv')
+    test.to_csv('./Check/check_test_data.csv')
+
     # 데이터 분리 결과 출력
     print(f"Train data Size: {len(train)} rows")
     print(f"Test data Size: {len(test)} rows")

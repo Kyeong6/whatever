@@ -189,8 +189,9 @@ pyrightconfig.json
 # pdf
 model/LSTM_pipeline/Guideline.pdf
 
-# Input, Output
+# Input, Output, Check
 model/LSTM_pipeline/Input/
 model/LSTM_pipeline/Output/
+model/LSTM_pipeline/Check/
 
 # End of https://www.toptal.com/developers/gitignore/api/jupyternotebooks,python,dotenv
