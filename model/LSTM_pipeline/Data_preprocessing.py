@@ -75,7 +75,7 @@ def Missing(df):
     return df
 
 
-# 1시간 간격으로 병합
+# 특정 시간 병합
 def TimeIntervalData(df,time_interval): 
 
     time_df = df.sort_index(ascending=True)
@@ -149,6 +149,7 @@ def save_data(df, table):
     # 전처리한 데이터, 원본 데이터의 criteria 저장
     df.to_csv(f'{output_path}/preprocessed.csv')  
     table.to_csv(f'{output_path}/criteria.csv')   
+
 
 def Data_preprocessing(file_name, percent):
     

@@ -44,8 +44,11 @@ def main():
         df = preprocessing.Missing(df) 
 
         if args.time is not None: 
-            # 시간 간격 병합
-            time_interval = {'hourly': '1H', 'daily': '1D'}.get(args.time)
+            # 1시간 간격 병합
+            # time_interval = {'hourly': '1H', 'daily': '1D'}.get(args.time)
+            
+            # 10분 간격 병합
+            time_interval = {'min': '10T','hourly': '1H', 'daily': '1D'}.get(args.time)
             df = preprocessing.TimeIntervalData(df,time_interval)
 
         if args.normal_range:
