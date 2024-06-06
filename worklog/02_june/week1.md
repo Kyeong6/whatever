@@ -232,7 +232,7 @@ python 1_Preprocessing_tool.py -f ./Input/tn_train.csv -p
 1. creteria.csv와 preprocessed.csv를 확인해본결과 잘 적용되었음을 확인하였다.
 </br><br/>
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/a52204c3-643e-41a4-8480-de2fdbf0a500/Untitled.png)
+![tn1](https://github.com/Kyeong6/whatever/assets/100195725/e238bd3e-5a08-432e-8141-9a3170331116)
 </br><br/>
 
 2. 수행 시간 및 cpu / memory 사용량은 다음과 같다.
@@ -259,7 +259,7 @@ python 2_Learning_LSTM.py -l
 
 **결과**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/66a56e00-c1b7-4585-8d4a-aa99acb0252a/Untitled.png)
+![tn2](https://github.com/Kyeong6/whatever/assets/100195725/b225e9f4-67b3-44a0-bcd9-22dcb4086e15)
 </br><br/>
 
 ```bash
@@ -371,7 +371,7 @@ TOC 데이터셋은 toc_train.csv, toc_predict.csv이다.
 
 ### 변경사항
 
-val 변수를 생성하여 [Training.py](http://Training.py) 모든 부분에 추가하였다. 
+val 변수를 생성하여 Training.py의 모든 부분에 추가하였다. 
 
 ```python
 # 학습 곡선 생성 및 저장
@@ -429,10 +429,10 @@ python 2_Learning_LSTM.py -l
 
 **결과**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/6002041a-1b89-4741-a1e3-16afac8ef021/Untitled.png)
+![toc1](https://github.com/Kyeong6/whatever/assets/100195725/c4f77e61-26ea-4de8-86b8-b8b0371042c5)
 </br><br/>
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/7e85895d-1e6d-4c1c-8935-5ead6290b00f/Untitled.png)
+![toc2](https://github.com/Kyeong6/whatever/assets/100195725/3070306c-e718-4e69-8225-d1808e3d65b6)
 </br><br/>
 
 ```python
