@@ -47,24 +47,30 @@ def main():
         df = training.read_data(args.filename)
     
         # 학습 데이터 / 테스트 데이터 분할
-        train, test = training.train_test_split(df)
+        train, val, test = training.train_test_split(df)
 
         # 학습 / 테스트 데이터 추가 확인
         print("Train and Test data split done.")
         print("Train data example:")
         print(train.head())
+        print("Validation data example:")
+        print(val.head())
         print("Test data example:")
         print(test.head())
         
         # 데이터 스케일링
         sc = training.data_scaling(train)
 
-        # x_train, y_train, x_test 생성
+        # x_train, y_train, x_val, y_val, x_test 생성
         x_train, y_train = training.create_train(train, args.window_size, args.periods, sc)
+        x_val, y_val = training.create_train(val, args.window_size, args.periods, sc)
         x_test = training.create_x_test(test, args.window_size, sc)
 
         # 모델 생성
-        lstm_model = training.lstm_arch(x_train, y_train, args.periods, args.epochs, args.batch_size)
+        lstm_model, history = training.lstm_arch(x_train, y_train, x_val, y_val, args.periods, args.epochs, args.batch_size)
+
+        # 학습 곡선 그리기
+        training.plot_learning_curves(history)
 
         # 모델 성능 평가 
         plot = training.lstm_performance(lstm_model, sc, x_test, test, args.epochs, args.batch_size)
