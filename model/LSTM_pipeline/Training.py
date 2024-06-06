@@ -45,21 +45,26 @@ def read_data(filename):
 
     return df
 
-# 학습 데이터 / 테스트 데이터 분할 (7:3)
-def train_test_split(df):
-    train_size = int(0.7 * len(df))
+# 학습 데이터 / 검증 데이터 / 테스트 데이터 분할 (8 : 1 : 1)
+def train_val_test_split(df):
+    train_size = int(0.8 * len(df))
+    val_size = int(0.1 * len(df))
+
     train = df.iloc[:train_size]
-    test = df.iloc[train_size:]
+    val = df.iloc[train_size:train_size+val_size]
+    test = df.iloc[train_size+val_size:]
 
     # 학습 데이터 / 테스트 데이터 확인을 위한 저장
     train.to_csv('./Check/check_train_data.csv')
+    val.to_csv('./Check/check_val_data.csv')
     test.to_csv('./Check/check_test_data.csv')
 
     # 데이터 분리 결과 출력
     print(f"Train data Size: {len(train)} rows")
+    print(f"Validation data Size: {len(val)} rows")
     print(f"Test data Size: {len(test)} rows")
 
-    return train, test
+    return train, val, test
 
 # 데이터 스케일링
 def data_scaling(train):
@@ -117,43 +122,78 @@ def create_x_test(test,window_size, sc):
     return x_test
 
 
-# 모델 생성
-def lstm_arch(x_train, y_train, periods, epochs, batch_size):
+# # 모델 생성
+# def lstm_arch(x_train, y_train, periods, epochs, batch_size):
+#     # 모델 구성 (LSTM 레이어 2개, 활성화함수: 하이퍼볼릭탄젠트 사용)
+#     lstm_model = Sequential([
+#         LSTM(units=50, return_sequences=True, input_shape=(x_train.shape[1], 1), activation='tanh'),
+#         LSTM(units=50, activation='tanh'),
+#         Dense(units=periods) 
+#     ])
+    
+#     # 모델 컴파일 (optimizer : SGD, 손실함수: MSE 사용)
+#     lstm_model.compile(optimizer=SGD(learning_rate=0.01, decay=1e-7, momentum=0.9, nesterov=False), loss='mean_squared_error')
+    
+#     # 모델 학습
+#     history = lstm_model.fit(x_train,
+#                               y_train, 
+#                               epochs=epochs, 
+#                               batch_size=batch_size, 
+#                               verbose=0, 
+#                               huffle=False
+#                               )
+    
+#     return lstm_model, history
+
+# 모델 생성 및 학습
+def lstm_arch(x_train, y_train, x_val, y_val, periods, epochs, batch_size):
+
     # 모델 구성 (LSTM 레이어 2개, 활성화함수: 하이퍼볼릭탄젠트 사용)
     lstm_model = Sequential([
         LSTM(units=50, return_sequences=True, input_shape=(x_train.shape[1], 1), activation='tanh'),
         LSTM(units=50, activation='tanh'),
-        Dense(units=periods) 
+        Dense(units=periods)
     ])
-    
+
     # 모델 컴파일 (optimizer : SGD, 손실함수: MSE 사용)
     lstm_model.compile(optimizer=SGD(learning_rate=0.01, decay=1e-7, momentum=0.9, nesterov=False), loss='mean_squared_error')
     
     # 모델 학습
-    lstm_model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, verbose=0, shuffle=False)
+    history = lstm_model.fit(
+        x_train, y_train, 
+        epochs=epochs, 
+        batch_size=batch_size, 
+        validation_data=(x_val, y_val),
+        verbose=0,
+        shuffle=False
+    )
     
-    return lstm_model
+    return lstm_model, history
 
-# # 모델 성능 평가
-# def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
-#     # 예측
-#     preds = lstm_model.predict(x_test)
-#     # 원래 값으로 변환
-#     preds = sc.inverse_transform(preds)
-    
-#     # 실제값과 예측값을 비교하기 위한 데이터프레임 생성
-#     predictions_plot = pd.DataFrame(columns=['actual', 'prediction'])
-#     predictions_plot['actual'] = test.iloc[0:len(preds), 0]
-#     predictions_plot['prediction'] = preds[:, 0]
-    
-#     # RMSE 계산
-#     mse = MeanSquaredError()
-#     mse.update_state(np.array(predictions_plot['actual']), np.array(predictions_plot['prediction']))
-#     RMSE = np.sqrt(mse.result().numpy())
-    
-#     # 그래프
-#     return (predictions_plot.plot(figsize=(15, 5), 
-#                                 title=f'lstm performance\nepochs={epochs}, batch size={str(batch_size)}, RMSE={str(round(RMSE, 4))}'))
+
+# 학습 곡선 생성 및 저장
+def plot_learning_curves(history):
+    plt.figure(figsize=(15, 5))
+    plt.plot(history.history['loss'], label='Training Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.title('Training and Validation Loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    output_path = './Output/Loss_history'
+    os.makedirs(output_path, exist_ok=True)
+    plt.savefig(f'{output_path}/learning_curves.tiff', format='tiff')
+    plt.show()
+
+    # 학습 손실 및 검증 손실을 CSV 파일로 저장
+    loss_history = pd.DataFrame({
+        'epoch': range(1, len(history.history['loss']) + 1),
+        'loss': history.history['loss'],
+        'val_loss': history.history['val_loss']
+    })
+    loss_history.to_csv(f'{output_path}/loss_history.csv', index=False)
+
+
 
 # 모델 성능 평가
 def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
@@ -231,8 +271,11 @@ def save_output(sc, lstm_model):
     output_path = './Output/Learning_lstm'
     os.makedirs(output_path,exist_ok=True)
 
-    dump(sc, f'{output_path}/scaler.pkl') # scaler 저장
-    lstm_model.save(f'{output_path}/lstm_model.h5') # 모델 저장
+    # scaler 저장
+    dump(sc, f'{output_path}/scaler.pkl') 
+
+    # 모델 저장
+    lstm_model.save(f'{output_path}/lstm_model.h5') 
 
 
 # 모델 학습 (에포크=700, 배치 사이즈=32)
@@ -246,18 +289,25 @@ def training(window_size, periods):
     df = read_data(filename)
     
     # 학습 데이터 / 테스트 데이터 분할
-    train, test = train_test_split(df)
+    train, val, test = train_val_test_split(df)
 
     # 데이터 스케일링
     sc = data_scaling(train)
 
+    # 검증 데이터 생성
+    val_size = int(0.15 * len(train))
+
     #  x_train, y_train, x_test 생성
     x_train, y_train = create_train(train,window_size, periods, sc)
+    x_val, y_val = create_train(val, window_size, periods, sc)
     x_test = create_x_test(test,window_size, sc)
 
     # 모델 생성
-    lstm_model = lstm_arch(x_train, y_train, periods, epochs, batch_size)
+    lstm_model, history = lstm_arch(x_train, y_train, x_val, y_val, periods, epochs, batch_size)
 
+    # 학습 곡선 생성 및 저장
+    plot_learning_curves(history)
+    
     # 모델 성능 평가
     plot = lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size)
 
