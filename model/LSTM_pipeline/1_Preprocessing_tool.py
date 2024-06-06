@@ -19,7 +19,7 @@ def parse_arguments():
     # subparsers = parser.add_subparsers()
     parser.add_argument('-f','--filename', help='파일 이름을 입력합니다.') 
     
-    parser.add_argument('-t', '--time', choices=['hourly', 'daily'], help='데이터의 시간 간격을 변경합니다. hour, day 중에서 선택할 수 있습니다.') 
+    parser.add_argument('-t', '--time', choices=['min', 'hourly', 'daily'], help='데이터의 시간 간격을 변경합니다. min, hour, day 중에서 선택할 수 있습니다.') 
 
     parser.add_argument('-n', '--normal_range', action='store_true', help='정상 범위를 정합니다. 기본은 UIF, LIF 이고, -m1(--min) 이나 -m2(--max)를 통해 정상 범위를 지정할 수 있습니다.')
     parser.add_argument('-m1', '--min', help='정상 범위의 최솟값을 지정합니다.', type=float) # default=None
@@ -29,7 +29,7 @@ def parse_arguments():
 
     parser.add_argument('-w', '--week', choices=['all', 'weekday', 'weekend'], help='주말 또는 평일 데이터를 구합니다. 기본값은 전체(all)입니다.', default='all')
 
-    parser.add_argument('-p', '--preprocess', action='store_true', help='특정한 값으로 데이터를 전처리합니다. (-t: daily, -n, -l: 10, -w: all) ') # 전처리에 대한 인자
+    parser.add_argument('-p', '--preprocess', action='store_true', help='특정한 값으로 데이터를 전처리합니다. (-t: min, -n, -l: 10, -w: all) ') # 전처리에 대한 인자
  
     return parser.parse_args()
 

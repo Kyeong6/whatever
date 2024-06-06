@@ -159,8 +159,11 @@ def Data_preprocessing(file_name, percent):
     # 결측치 보정
     df = Missing(df)
 
-    # 데이터 병합 (1D)
-    time_interval = '1D'
+    # # 데이터 병합 (1D)
+    # time_interval = '1D'
+
+    # 데이터 병합 (10T)
+    time_interval = '10T'
     df = TimeIntervalData(df,time_interval)
     
     # 이상치 보정
