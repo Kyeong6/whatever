@@ -137,7 +137,7 @@ def save_data(abnormal_df):
     os.makedirs(output_path, exist_ok=True)
      
     # 이상치 데이터 저장
-    abnormal_df.to_csv(f'{output_path}/abnomal.csv')
+    abnormal_df.to_csv(f'{output_path}/abnormal.csv')
 
 
 def abnormal_detection(file_name,criteria):

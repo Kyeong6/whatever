@@ -98,7 +98,8 @@ def prediction(file_name, criteria):
     # 데이터 전처리: 결측치 처리, 시간 간격으로 병합
     if df.isnull().any().any():
         df = preprocessing.Missing(df)
-    df = preprocessing.TimeIntervalData(df, '1D') # 1시간 간격으로 병합 
+    # df = preprocessing.TimeIntervalData(df, '1D') # 1시간 간격으로 병합 
+    df = preprocessing.TimeIntervalData(df, '10T') # 10분 간격으로 병합 
 
     # 모델과 스케일러 불러오기
     sc, lstm_model = abnormal_detection.load_model_and_scaler()
