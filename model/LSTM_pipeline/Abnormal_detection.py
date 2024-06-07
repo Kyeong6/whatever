@@ -69,10 +69,9 @@ def create_x_new_data(new_data, window_size, sc):
     # x 학습데이터 생성
     x_data = []
 
-    for i in range(data_len - window_size + 1):
-        # x_data_end = i+window_size 
-        # x_data.append(data_scaled[i:x_data_end, 0])
-        x_data.append(data_scaled[i:i + window_size, 0])
+    for i in range(data_len - window_size):
+        x_data_end = i+window_size 
+        x_data.append(data_scaled[i:x_data_end, 0])
  
     # 리스트를 넘파이 배열로 변환
     x_data =  np.array(x_data)

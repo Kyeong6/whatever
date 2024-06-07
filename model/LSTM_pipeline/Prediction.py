@@ -108,27 +108,20 @@ def prediction(file_name, criteria):
     # 모델의 윈도우 사이즈 찾기
     window_size = lstm_model.layers[0].input_shape[1]
     
-    all_predictions = pd.DataFrame()
-    
-    for i in range(len(df) - window_size):
-        # x_data 생성
-        x_data = abnormal_detection.create_x_new_data(df, window_size, sc)
+    # x_data 생성
+    x_data = abnormal_detection.create_x_new_data(df, window_size, sc)
 
-        # 예측
-        preds = abnormal_detection.predictions(x_data, lstm_model, sc)
-        
-        new_data = create_predictive_data(df[i:i + window_size], preds)
-        all_predictions = pd.concat([all_predictions, new_data])
+    # 예측
+    preds = abnormal_detection.predictions(x_data, lstm_model, sc)
 
-    # # 예측값에 대한 시계열 데이터 생성
-    # periods_df = create_predictive_data(df, preds)
+    # 예측값에 대한 시계열 데이터 생성
+    periods_df = create_predictive_data(df, preds)
 
     # 이상치 검출
-    # abnormal_df = abnormal_detection.detection(pd.DataFrame(periods_df.iloc[:,0]), criteria)
-    abnormal_df = abnormal_detection.detection(all_predictions, criteria)
+    abnormal_df = abnormal_detection.detection(pd.DataFrame(periods_df.iloc[:,0]), criteria)
 
     # 레이블 채우기
-    periods_df = fill_label(all_predictions, abnormal_df)
+    periods_df = fill_label(periods_df, abnormal_df)
 
     # 예측 데이터 저장
     save_data(periods_df)
