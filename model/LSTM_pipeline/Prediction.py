@@ -58,7 +58,7 @@ def create_predictive_data(df, preds):
     freq = pd.infer_freq(df.index) # 시간 간격 찾기
 
     # 데이트타임 생성
-    preds_index = pd.date_range(str(last_index), periods=(periods+1), freq=freq)
+    preds_index = pd.date_range(start=last_index, periods=(periods+1), freq=freq)
     preds_index = preds_index[1:] # 예측값의 데이트타임 추출
 
     # 예측값의 시계열 데이터 생성
@@ -89,7 +89,8 @@ def save_data(periods_df):
     os.makedirs(output_path,exist_ok=True)
 
     # 예측한 데이터 저장
-    periods_df.to_csv(f'{output_path}/prediction.csv') 
+    periods_df.to_csv(f'{output_path}/prediction.csv', 
+                      date_format='%Y-%m-%d %H:%M') 
 
 
 def prediction(file_name, criteria):

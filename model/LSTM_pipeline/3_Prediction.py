@@ -28,7 +28,7 @@ def parse_arguments():
     # 데이터 전처리
     parser.add_argument('-dp', '--data_preprocessing', action='store_true', 
                         help='데이터 전처리를 실행합니다. 기본은 결측치 보정이고, 도구 상태가 -p(--prediction)이면 하루 간격으로 시간을 병합합니다. -t(--time)와 -w(--week)를 통해 지정할 수 있습니다.') # 예측에 대한 인자
-    parser.add_argument('-t', '--time', choices=['min', 'hourly', 'daily'], help='데이터의 시간 간격을 변경합니다. min, hourly, daily 중에서 선택할 수 있습니다.', default='daily') 
+    parser.add_argument('-t', '--time', choices=['min', 'hourly', 'daily'], help='데이터의 시간 간격을 변경합니다. min, hourly, daily 중에서 선택할 수 있습니다.', default='min') 
     parser.add_argument('-w', '--week', choices=['all', 'weekday', 'weekend'], help='주말 또는 평일 데이터를 구합니다. 기본값은 전체(all)입니다.', default='all')
     
     parser.add_argument('-p', '--prediction', action='store_true', help='도구를 예측 상태로 설정합니다.') # 예측에 대한 인자
