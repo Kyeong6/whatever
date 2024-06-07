@@ -70,37 +70,52 @@ def main():
 
         # 모델의 윈도우 사이즈 찾기
         window_size = lstm_model.layers[0].input_shape[1]
-    
-        # x_data 생성
-        x_data = abnormal_detection.create_x_new_data(df, window_size, sc)
 
-        # 예측
-        preds = abnormal_detection.predictions(x_data, lstm_model, sc)
+        all_predictions = pd.DataFrame()
 
-        # 이상 탐지
-        if args.detection:
-            # 예측값에 대한 시계열 데이터 생성
-            preds_df = abnormal_detection.create_time_series_data(df, preds)
+        for i in range(len(df) - window_size):
 
-            # 이상치 추출
-            abnormal_df = abnormal_detection.detection(preds_df, args.criteria)
-    
-            # 이상치 데이터 저장
-            abnormal_detection.save_data(abnormal_df)       
+            # x_data 생성
+            x_data = abnormal_detection.create_x_new_data(df, window_size, sc)
 
-        # 예측
-        if args.prediction: 
-            # 예측값에 대한 시계열 데이터 생성
-            periods_df = predict.create_predictive_data(df, preds)
+            # 예측
+            preds = abnormal_detection.predictions(x_data, lstm_model, sc)
+
+            new_data = predict.create_predictive_data(df[i:i + window_size], preds)
+            all_predictions = pd.concat([all_predictions, new_data])
 
             # 이상치 검출
-            abnormal_df = abnormal_detection.detection(pd.DataFrame(periods_df.iloc[:,0]), args.criteria)
+            abnormal_df = abnormal_detection.detection(pd.DataFrame(new_data.iloc[:, 0]), args.criteria)
+            all_abnormals = pd.concat([all_abnormals, abnormal_df])
 
-            # 레이블 채우기
-            periods_df = predict.fill_label(periods_df, abnormal_df)
+        periods_df = predict.fill_label(all_predictions, all_abnormals)
+        predict.save_data(periods_df)
+        abnormal_detection.save_data(all_abnormals)
 
-            # 예측 데이터 저장
-            predict.save_data(periods_df)
+        # # 이상 탐지
+        # if args.detection:
+        #     # 예측값에 대한 시계열 데이터 생성
+        #     preds_df = abnormal_detection.create_time_series_data(df, preds)
+
+        #     # 이상치 추출
+        #     abnormal_df = abnormal_detection.detection(preds_df, args.criteria)
+    
+        #     # 이상치 데이터 저장
+        #     abnormal_detection.save_data(abnormal_df)       
+
+        # # 예측
+        # if args.prediction: 
+        #     # 예측값에 대한 시계열 데이터 생성
+        #     periods_df = predict.create_predictive_data(df, preds)
+
+        #     # 이상치 검출
+        #     abnormal_df = abnormal_detection.detection(pd.DataFrame(periods_df.iloc[:,0]), args.criteria)
+
+        #     # 레이블 채우기
+        #     periods_df = predict.fill_label(periods_df, abnormal_df)
+
+        #     # 예측 데이터 저장
+        #     predict.save_data(periods_df)
 
 
 if __name__ == '__main__':
