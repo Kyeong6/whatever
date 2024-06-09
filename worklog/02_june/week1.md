@@ -104,6 +104,28 @@ Check 디렉토리를 생성하여 학습 / 테스트 데이터를 저장
 - 결과값 전송
   </br><br/>
 
+**1. Raw Data 받기**  
+기기에서 얻은 Raw Data를 받는 단계로써 해당 과정은 자문이 필요하다
+
+**2. Raw Data를 DB에 적재(Load)**  
+기기에서 얻은 Raw Data를 DB에 적재하여 csv 파일로 변환할 준비를 한다.
+
+**3. DB의 값들을 csv 파일로 변환(Extract)**  
+DB의 값들을 추출하여 csv 파일 형식으로 변환한다. 왜냐하면 현재 LSTM 모델은 Input을 csv 파일 형식으로 설정되어있기 때문이다.
+
+**4. csv 파일의 값을 변형하여 Input 디렉토리에 배치(Transform)**  
+csv 파일의 값들을 모델의 Input으로 설정한 구조로 변형(pandas 이용)하여 Input 디렉토리에 배치하여 예측을 수행할 준비를 완료한다.
+
+**5. 3_Prediction.py 실행**  
+1_Preprocessing_tool.py와 2_Learning_LSTM.py는 모델을 학습할 때 진행하는 코드로, 최종적인 제품 단계에서는 이미 학습된 모델을 사용하여 예측을 수행하므로 기존에 h5, sclaer 파일이 사전에 존재한다. 따라서 3_Prediction.py 파일만 실행한다.
+
+**6. 예측값을 얻은 뒤 적재 혹은 알림 구현**  
+예측값을 얻은 뒤 제품의 목적에 따라 적재 혹은 알림을 구현해야하는데, 이는 자문이 필요하다.   
+
+**7. 위의 단계를 수행하는 자동화 시스템 구축**  
+1 ~ 6번까지의 단계가 1 cycle이다. 정해진 시간에 위의 단계를 수행하는 자동화 시스템을 구축해야 한다.
+</br><br/>
+
 ## 6/6
 
 **설명**
@@ -532,3 +554,83 @@ python 3_Prediction.py -f ./Input/toc_predict.csv -a
 cpu usage               : 113.8 %
 memory usage            : 0.4 GB
 ```
+</br><br/>
+## 추가적인 진행사항
+
+**설명**
+
+현재 3_Prediction.py를 실행하면 Output/Prediction/prediction.csv에 예측값이 저장이 된다.   
+기존 코드를 실행하면 -f로 설정한 파일의 마지막 행만 확인한 후 예측을 진행하게 된다. (위의 결과 부분)   
+xgboost와의 비교(시각화 이용)를 위해서는 특정 기간의 예측값들이 존재해야한다. 이를 위해서 기존 LSTM Pipeline 코드를 수정하였고, 최종적으로 실제값, xgboost의 예측값, LSTM의 예측값을 시각화하여 비교할 예정이다.
+</br><br/>
+
+### 코드 변경
+
+**변경 사항**
+
+https://github.com/Kyeong6/whatever/commit/b0efd067b29b38e4ea7f62971ffbf63a92a11a33
+
+window_size가 7로 설정되어 2023-03-31 22:50을 시작으로 하여 prediction.csv에는 2023-04-01 00:00부터 예측값을 존재하게 하였다. 
+</br><br/>
+
+**결과**
+
+- 실행 시간 및 사용량확인
+
+```bash
+# TN
+7189.5713 sec
+cpu usage               : 83.3 %
+memory usage            : 1.39 GB
+
+# TOC
+7331.8641 sec
+cpu usage               : 94.6 %
+memory usage            : 1.37 GB
+```
+
+2023-04-01 00:00 ~ 2023-08-31 23:50의 10분 간격 데이터(약 22,000개)를 예측하는 데 7189초
+7331초로 2시간 정도의 시간이 소요됐다.
+</br><br/>
+
+- Ouput 확인(TOC)
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/16001b6c-4f2c-455e-a8c0-6c9cae0ec8fb/Untitled.png)
+
+prediction.csv와 abnormal.csv 모두 정상적으로 결과를 얻었음을 확인할 수 있다.
+</br><br/>
+
+### EDA
+
+XGBoost와 LSTM 예측값을 TN / TOC 모두 확인한 후 python 라이브러리인 plotly로 시각화를 진행하였다.   
+아래의 그래프를 확인해보면 LSTM이 XGBoost보다 실제값의 그래프와 유사하여 좋은 성능을 보임을 확인할 수 있다.
+</br><br/>
+
+**TN_XGBoost**
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/1a4b232f-c81d-4255-8e0d-b3417576fd4c/Untitled.png)
+</br><br/>
+
+**TN_LSTM**
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/8c70a13d-c5b1-45b5-a8ee-0221d587c612/Untitled.png)
+</br><br/>
+
+**TN_Comparison**
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/0649bf26-7f91-4e99-993b-adca51471ba8/Untitled.png)
+</br><br/>
+
+**TOC_XGBoost**
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/b4803704-7ab3-4aab-bf76-8543ecbb28ba/Untitled.png)
+</br><br/>
+
+**TOC_LSTM**
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/77ee9db5-fb2c-4356-b204-f89384c06af1/Untitled.png)
+</br><br/>
+
+**TOC_Comparison**
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/2e78b1e4-6933-4207-8cc4-6dde36f08404/Untitled.png)
