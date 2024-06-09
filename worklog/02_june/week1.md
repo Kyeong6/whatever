@@ -568,7 +568,7 @@ xgboost와의 비교(시각화 이용)를 위해서는 특정 기간의 예측�
 
 **변경 사항**
 
-https://github.com/Kyeong6/whatever/commit/b0efd067b29b38e4ea7f62971ffbf63a92a11a33
+[Kyeong6: whatever](https://github.com/Kyeong6/whatever/commit/b0efd067b29b38e4ea7f62971ffbf63a92a11a33)
 
 window_size가 7로 설정되어 2023-03-31 22:50을 시작으로 하여 prediction.csv에는 2023-04-01 00:00부터 예측값을 존재하게 하였다. 
 </br><br/>
@@ -595,7 +595,8 @@ memory usage            : 1.37 GB
 
 - Ouput 확인(TOC)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/16001b6c-4f2c-455e-a8c0-6c9cae0ec8fb/Untitled.png)
+![toc_result](https://github.com/Kyeong6/whatever/assets/100195725/a752b2fa-a329-4e34-bd80-a54c40754d5e)
+
 
 prediction.csv와 abnormal.csv 모두 정상적으로 결과를 얻었음을 확인할 수 있다.
 </br><br/>
@@ -608,29 +609,29 @@ XGBoost와 LSTM 예측값을 TN / TOC 모두 확인한 후 python 라이브러�
 
 **TN_XGBoost**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/1a4b232f-c81d-4255-8e0d-b3417576fd4c/Untitled.png)
+![tn_xgboost](https://github.com/Kyeong6/whatever/assets/100195725/0577ec4d-7b1e-4631-9661-c36914eeb671)
 </br><br/>
 
 **TN_LSTM**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/8c70a13d-c5b1-45b5-a8ee-0221d587c612/Untitled.png)
+![tn_lstm](https://github.com/Kyeong6/whatever/assets/100195725/09ad14d2-f240-4ca0-a706-8c848b8b1d91)
 </br><br/>
 
 **TN_Comparison**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/0649bf26-7f91-4e99-993b-adca51471ba8/Untitled.png)
+![tn_comparison](https://github.com/Kyeong6/whatever/assets/100195725/5379966e-60e4-4f0e-8ce6-a4771cb2b3f8)
 </br><br/>
 
 **TOC_XGBoost**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/b4803704-7ab3-4aab-bf76-8543ecbb28ba/Untitled.png)
+![toc_xgboost](https://github.com/Kyeong6/whatever/assets/100195725/6e5d4615-1857-4aa5-8804-432b1b159570)
 </br><br/>
 
 **TOC_LSTM**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/77ee9db5-fb2c-4356-b204-f89384c06af1/Untitled.png)
+![toc_lstm](https://github.com/Kyeong6/whatever/assets/100195725/0b49bb47-39fa-43fe-b859-1e0817ebc663)
 </br><br/>
 
 **TOC_Comparison**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/2e78b1e4-6933-4207-8cc4-6dde36f08404/Untitled.png)
+![toc_comparison](https://github.com/Kyeong6/whatever/assets/100195725/d91a3587-ad6a-48f8-9620-f48808295e49)
