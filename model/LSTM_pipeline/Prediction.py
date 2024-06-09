@@ -50,22 +50,30 @@ def read_data(file_name):
     df = df.sort_index(ascending=True)   
     return df 
 
+# # 예측 데이터 생성
+# def create_predictive_data(df, preds):
+#     col = df.columns[0]
+#     last_index = df.index[-1] # # 데이터의 마지막 인덱스 찾기
+#     periods = preds.shape[1] # # prediction window size 찾기
+#     freq = pd.infer_freq(df.index) # 시간 간격 찾기
+
+#     # 데이트타임 생성
+#     preds_index = pd.date_range(start=last_index, periods=(periods+1), freq=freq)
+#     preds_index = preds_index[1:] # 예측값의 데이트타임 추출
+
+#     # 예측값의 시계열 데이터 생성
+#     periods_df = pd.DataFrame(index=preds_index, columns=[col, 'label'])
+#     periods_df[col] = list(preds[-1])
+#     periods_df.index.name =  'time'
+
+#     return periods_df
+
 # 예측 데이터 생성
-def create_predictive_data(df, preds):
+def create_predictive_data(df, preds, current_time):
     col = df.columns[0]
-    last_index = df.index[-1] # # 데이터의 마지막 인덱스 찾기
-    periods = preds.shape[1] # # prediction window size 찾기
-    freq = pd.infer_freq(df.index) # 시간 간격 찾기
-
-    # 데이트타임 생성
-    preds_index = pd.date_range(start=last_index, periods=(periods+1), freq=freq)
-    preds_index = preds_index[1:] # 예측값의 데이트타임 추출
-
-    # 예측값의 시계열 데이터 생성
-    periods_df = pd.DataFrame(index=preds_index, columns=[col, 'label'])
-    periods_df[col] = list(preds[-1])
-    periods_df.index.name =  'time'
-
+    periods_df = pd.DataFrame(index=[current_time], columns=[col, 'label'])
+    periods_df[col] = preds[-1]
+    periods_df.index.name = 'time'
     return periods_df
 
 # 레이블 채우기
@@ -82,15 +90,27 @@ def fill_label(periods_df, abnormal_df):
 
     return periods_df
 
+# # 예측 데이터 저장 ( Time / Values / Label )
+# def save_data(periods_df):
+#     # 출력 폴더 생성
+#     output_path = './Output/Prediction'
+#     os.makedirs(output_path,exist_ok=True)
+
+#     # 예측한 데이터 저장
+#     periods_df.to_csv(f'{output_path}/prediction.csv', 
+#                       date_format='Y-%m-%d %H:%M') 
+
 # 예측 데이터 저장 ( Time / Values / Label )
 def save_data(periods_df):
     # 출력 폴더 생성
     output_path = './Output/Prediction'
-    os.makedirs(output_path,exist_ok=True)
-
-    # 예측한 데이터 저장
-    periods_df.to_csv(f'{output_path}/prediction.csv', 
-                      date_format='Y-%m-%d %H:%M') 
+    os.makedirs(output_path, exist_ok=True)
+    output_file = f'{output_path}/prediction.csv'
+    
+    if not os.path.exists(output_file):
+        periods_df.to_csv(output_file, mode='w', header=True, date_format='%Y-%m-%d %H:%M')
+    else:
+        periods_df.to_csv(output_file, mode='a', header=False, date_format='%Y-%m-%d %H:%M')
 
 
 def prediction(file_name, criteria):
@@ -107,24 +127,51 @@ def prediction(file_name, criteria):
 
     # 모델의 윈도우 사이즈 찾기
     window_size = lstm_model.layers[0].input_shape[1]
+
+    output_path = './Output/Prediction/prediction.csv'
+    if os.path.exists(output_path):
+        os.remove(output_path)
+
+    for current_time in df.index:
+        # Only use data up to the current time for prediction
+        single_row_df = df.loc[:current_time]
+        if len(single_row_df) < window_size:
+            print(f"Skipping time {current_time} due to insufficient data (required: {window_size}, available: {len(single_row_df)})")
+            continue
+
+        print(f"Creating x_data for time {current_time}")
+        x_data = abnormal_detection.create_x_new_data(single_row_df, window_size, sc)
+        if x_data.size == 0:
+            print(f"Skipping time {current_time} due to empty x_data")
+            continue
+
+        preds = abnormal_detection.predictions(x_data, lstm_model, sc)
+        periods_df = create_predictive_data(single_row_df, preds, current_time)
+
+        # 이상치 검출
+        abnormal_df = abnormal_detection.detection(periods_df.iloc[:, [0]], criteria)
+        periods_df = fill_label(periods_df, abnormal_df)
+
+        # 예측 데이터 저장
+        save_data(periods_df)
     
-    # x_data 생성
-    x_data = abnormal_detection.create_x_new_data(df, window_size, sc)
+    # # x_data 생성
+    # x_data = abnormal_detection.create_x_new_data(df, window_size, sc)
 
-    # 예측
-    preds = abnormal_detection.predictions(x_data, lstm_model, sc)
+    # # 예측
+    # preds = abnormal_detection.predictions(x_data, lstm_model, sc)
 
-    # 예측값에 대한 시계열 데이터 생성
-    periods_df = create_predictive_data(df, preds)
+    # # 예측값에 대한 시계열 데이터 생성
+    # periods_df = create_predictive_data(df, preds)
 
-    # 이상치 검출
-    abnormal_df = abnormal_detection.detection(pd.DataFrame(periods_df.iloc[:,0]), criteria)
+    # # 이상치 검출
+    # abnormal_df = abnormal_detection.detection(pd.DataFrame(periods_df.iloc[:,0]), criteria)
 
-    # 레이블 채우기
-    periods_df = fill_label(periods_df, abnormal_df)
+    # # 레이블 채우기
+    # periods_df = fill_label(periods_df, abnormal_df)
 
-    # 예측 데이터 저장
-    save_data(periods_df)
+    # # 예측 데이터 저장
+    # save_data(periods_df)
 
 
 if __name__ == "__main__":

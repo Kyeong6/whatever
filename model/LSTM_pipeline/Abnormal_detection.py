@@ -63,6 +63,8 @@ def create_x_new_data(new_data, window_size, sc):
     data = new_data.values
     data_len = len(data)
     
+    print(f"Data length: {data_len}, Window size: {window_size}")
+
     # 학습 데이터 스케일링
     data_scaled = sc.transform(data)
     
@@ -72,13 +74,23 @@ def create_x_new_data(new_data, window_size, sc):
     for i in range(data_len - window_size):
         x_data_end = i+window_size 
         x_data.append(data_scaled[i:x_data_end, 0])
- 
+
+    if len(x_data) == 0:
+        print("No data available to create x_data")
+    
     # 리스트를 넘파이 배열로 변환
     x_data =  np.array(x_data)
 
+    print(f"x_data shape before reshape: {x_data.shape}")
+
+    # # x_data를 텐서로 변환
+    # x_data = np.reshape(x_data, (x_data.shape[0], x_data.shape[1], 1))
 
     # x_data를 텐서로 변환
-    x_data = np.reshape(x_data, (x_data.shape[0], x_data.shape[1], 1))
+    if x_data.size > 0:
+        x_data = np.reshape(x_data, (x_data.shape[0], x_data.shape[1], 1))
+    
+    print(f"x_data shape after reshape: {x_data.shape}")
     
     return x_data
 
