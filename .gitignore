@@ -194,4 +194,7 @@ model/LSTM_pipeline/Input/
 model/LSTM_pipeline/Output/
 model/LSTM_pipeline/Check/
 
+# model algorithm
+model/
+
 # End of https://www.toptal.com/developers/gitignore/api/jupyternotebooks,python,dotenv
