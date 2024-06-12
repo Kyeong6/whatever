@@ -1,3 +1,6 @@
+# 업무일지  
+기존 업무일지는 LSTM 모델 코드가 표시되어있지만, 코드 부분은 생략하고 분석 내용만 작성하도록 하겠습니다.
+
 ## Setting
 
 ### 순서
@@ -132,12 +135,6 @@ python 1_Preprocessing_tool.py -f /Users/kyeong6/Desktop/github_submit/WVR/LSTM_
 해당 파일은 데이터셋 전처리를 위한 CLI 도구 역할을 한다. argparse 라이브러리를 통해 명령줄 옵션 정의 및 parsing하며, Data_preprocessing 모듈 함수 사용하여 실제 데이터 작업 수행
 
 ### main() 함수
-
-- `preprocessing = importlib.import_module('Data_preprocessing')` 작성한 이유
-    - `Data_preprocessing.py`를 참조하여 main()가 실행
-
-- main()
-
 ```python
 def main():
     args = parse_arguments()
@@ -149,8 +146,11 @@ def main():
         df = preprocessing.Missing(df) 
 
         if args.time is not None: 
-            # 시간 간격 병합
-            time_interval = {'hourly': '1H', 'daily': '1D'}.get(args.time)
+            # 1시간 간격 병합
+            # time_interval = {'hourly': '1H', 'daily': '1D'}.get(args.time)
+            
+            # 10분 간격 병합
+            time_interval = {'min': '10T','hourly': '1H', 'daily': '1D'}.get(args.time)
             df = preprocessing.TimeIntervalData(df,time_interval)
 
         if args.normal_range:
@@ -166,7 +166,11 @@ def main():
     else:
         # 데이터 전처리 : 시간 병합(daily), 이상치 보정(level: 10%, 정상범위: UIF or LIF), 전체 데이터(week: all)
         preprocessing.Data_preprocessing(args.filename, args.level)
+
 ```
+- `preprocessing = importlib.import_module('Data_preprocessing')` 작성한 이유
+    - `Data_preprocessing.py`를 참조하여 main()가 실행
+
 
 - `if not args.preprocess` 조건문
     - 위 parser.add_argument의 -p 옵션에 해당하는 --preprocess가 설정되지 않았을 때 실행함을 의미한다. 즉, 사용자가 input data의 전처리를 세부적으로 제어하고자 할 때 조건문 블록 내의 코드가 실행
@@ -257,38 +261,6 @@ def main():
 
 - 연속적인 결측치 3개 이하이면 이전의 값 대체, 초과이면 선형 보간을 사용하여 결측치를 채움
 
-```python
-def Missing(df):
-    n = 0
-    first_column = df.iloc[:, n]
-
-    # in case first line is null
-    if first_column.isnull().iloc[0]:
-        first_non_nan_index = first_column.first_valid_index()
-        df = df.loc[first_non_nan_index:]
-
-    # in case last lines are missing
-    nan_list = list(first_column.isnull())
-    if nan_list[-1]:
-        last_non_nan_idx = first_column.last_valid_index()
-        df = df.loc[:last_non_nan_idx]
-
-    # in case greater than 3
-    method_fill = 'ffill'  # replace previous values
-    count = 0
-    for i, v in enumerate(first_column.isnull()) : 
-        if v:
-            count += 1
-        else:
-            if count > 3:
-                df.iloc[i - count-1:i+1, n] = df.iloc[i - count-1:i+1, n].interpolate()  # replace with interpolation
-            else: # in case missing values are less than equal to 3
-                df.iloc[i - count-1:i, n].fillna(method=method_fill, inplace=True)
-            count = 0
-   
-    return df
-```
-
 - 첫 번째 조건문(if first_column.isnull().iloc[0]) : 첫 행 결측치 처리
     - 첫 행이 만약 결측치라면 결측치가 아닌 첫 행을 찾아서 그 행 이후 데이터만 유지
     - **선형보간법에서 첫번째 점에 해당**
@@ -303,30 +275,10 @@ def Missing(df):
 
 ### 시간 간격으로 병합
 
-```python
-def TimeIntervalData(df,time_interval): 
-
-    time_df = df.sort_index(ascending=True)
-    time_df = time_df.resample(time_interval).mean() # 평균값으로 병합
-
-    # time의 결측치 확인
-    if time_df.isnull().any().any():
-        time_df = Missing(time_df) 
-
-    return time_df
-```
-
 - 데이터를 지정된 시간 간격(time_interval)으로 재표본화하고 각 간격의 평균값 계산
     - 시간 간격 일관되게하여 분석, 모델링에 적합
 - 1_Preprocessing_tool.py
-
-```python
-if args.time is not None: 
-            # 시간 간격 병합
-            time_interval = {'hourly': '1H', 'daily': '1D'}.get(args.time)
-            df = preprocessing.TimeIntervalData(df,time_interval)
-```
-
+  
 TimeIntervalData의 매개변수인 time_interval을 1_Preprocessing_tool.py에서 지정이 가능하다. 
 
 - 기준
@@ -335,7 +287,7 @@ TimeIntervalData의 매개변수인 time_interval을 1_Preprocessing_tool.py에�
 
 -t 인자를 terminal에 작성할 때 hourly 혹은 daily를 함께 작성해줘야 하는 이유이다.
 
-```python
+```bash
 # 예시
 python 1_Preprocessing_tool.py -t hourly
 ```
@@ -344,7 +296,7 @@ python 1_Preprocessing_tool.py -t hourly
 
 - 기존 값
 
-```python
+```bash
                      Value
 2024-01-01 00:00:00     44
 2024-01-01 00:01:00     47
@@ -368,7 +320,7 @@ print(resampled_df)
 
 - 변형값
 
-```python
+```bash
                      Value
 2024-01-01 00:00:00   57.8
 2024-01-01 00:05:00   47.2
@@ -382,56 +334,12 @@ print(resampled_df)
 
 - 입력받은 퍼센트 값에서 벗어나는 값 정상범위로 보정
 
-```python
-def Anomalous(df, percent, normal_max=None, normal_min=None): 
-    col = df.columns[0]
-    
-    # 원본 데이터의 최댓값, 최솟값 계산
-    MAX = df[col].max()        
-    MIN = df[col].min()
-    
-    # 정상범위가 없는 경우 : UIF, LIF 
-    if normal_max is None and normal_min is None: 
-        q1 = df[col].quantile(0.25)
-        q3 = df[col].quantile(0.75)
-        IQR = q3 - q1
-        UIF = q3 + (IQR * 1.5)
-        LIF = q1 - (IQR * 1.5)
-        normal_max = UIF 
-        normal_min = LIF
-    
-    # criteria.csv 생성
-    table = pd.DataFrame({'Values': [ MIN, MAX, normal_min, normal_max] },
-                index=['raw_min', 'raw_max', 'normal_min', 'normal_max'])
-
-    # 이상치 보정
-    if normal_max is not None: # 정상범위의 최댓값이 있는 경우
-        # U_level 계산
-        U_level =  (abs(MAX - normal_max) * (percent * 0.01)) +  normal_max
-        table.loc['U_level'] = U_level # table에서 U_level를 추가
-        
-        # 데이터의 최댓값이 정상범위의 최댓값보다 크면 정상범위의 최댓값으로 대체 
-        if MAX > normal_max:
-            df.loc[df[col] > U_level] = normal_max
-
-    if normal_min is not None: # 정상범위의 최솟값이 있는 경우
-        # L_level 계산
-        L_level = normal_min - (abs(normal_min - MIN) * (percent * 0.01))   
-        table.loc['L_level'] = L_level # table에서 L_level 추가
-
-        # 데이터의 최솟값이 정상범위의 최솟값보다 크면 정상범위의 최솟값으로 대체 
-        if MIN < normal_min:
-            df.loc[df[col] < L_level] = normal_min
-           
-    return df, table
-```
-
 - col = df.columns[0] : value값 존재
 - MIN, MAX : criteria.csv에 넣을 값
 - UIF, LIF : normal_max, normal_min이 지정되지 않았을 경우 데이터의 1사분위, 3사분위(q1, q3)을 기반으로 내부 울타리 계산(데이터의 정상성)
 - 1_Preprocessing_tool.py
 
-```python
+```bash
 python 1_Preprocessing_tool.py -n -m1 -m2
 ```
 
@@ -458,15 +366,6 @@ python 1_Preprocessing_tool.py -n -m1 -m2
 
 ### 평일과 주말 데이터 추출
 
-```python
-def week(df,day_of_week):
-        if day_of_week == 'weekend':
-            return df[df.index.dayofweek.isin([5, 6])]  # 5: 토요일, 6: 일요일
-        
-        if day_of_week == 'weekday':
-            return df[df.index.dayofweek.isin([0, 1, 2, 3, 4])]  # 0~4: 월요일부터 금요일까지
-```
-
 df.index.dayofweek는 pandas 라이브러리에서 datetime 데이터 타입의 값의 요일을 나타내는 정수를 반환
 
 | 요일 | 정수 |
@@ -480,7 +379,7 @@ df.index.dayofweek는 pandas 라이브러리에서 datetime 데이터 타입의 
 | 일요일 | 6 |
 - 1_Preprocessing_tool.py
 
-```python
+```bash
 python 1_Preprocessing_tool.py -w weekday
 ```
 
@@ -489,18 +388,6 @@ weekday : 평일
 weekend : 주말
 
 ### 데이터 저장
-
-```python
-def save_data(df, table):
-
-    # 폴더 생성
-    output_path = './Output/Data_preprocessing'
-    os.makedirs(output_path, exist_ok=True)
-
-    # 전처리한 데이터, 원본 데이터의 criteria 저장
-    df.to_csv(f'{output_path}/preprocessed.csv')  
-    table.to_csv(f'{output_path}/criteria.csv')
-```
 
 위 과정들을 진행한 후의 결과물(output)을 저장
 
@@ -694,16 +581,6 @@ CUDA를 사용하는 GPU 디바이스 설정 코드
 
 ### 데이터 읽어오기(read_data)
 
-```python
-def read_data(filename):
-    df = pd.read_csv(filename, 
-                    parse_dates=['time'], index_col=0)
-    col = df.columns[0]
-    df[col] = df[col].astype(float)
-
-    return df
-```
-
 - read_data 함수의 인수는 전처리 된 파일인 `preprocessed.csv`
 - csv 파일 형식
 
@@ -736,15 +613,6 @@ time
 
 ### 학습 데이터 / 테스트 데이터 분할 (7:3)
 
-```python
-def train_test_split(df):
-    train_size = int(0.7 * len(df))
-    train = df.iloc[:train_size]
-    test = df.iloc[train_size:]
-
-    return train, test
-```
-
 - read_data함수가 반환하는 df를 인수로 받아 모델 학습을 진행하기 위한 train / test 데이터 분할 진행
 - 해당 함수에서는 분할 비율을 `train : test = 7 : 3` 로 설정
 - 2_Learning_LSTM.py
@@ -757,15 +625,6 @@ train, test = training.train_test_split(df)
 각각 비율에 맞게 train, test 변수로 데이터가 들어감
 
 ### 데이터 스케일링
-
-```python
-def data_scaling(train):
-    train_data = train.values
-    sc = MinMaxScaler(feature_range=(0, 1)) # 정규화 
-    sc = sc.fit(train_data) 
-
-    return sc
-```
 
 `train_test_split` 를 통해 얻은 train 데이터를 data_scaling 인수로 하여 MinMaxScaler 정규화 진행
 
@@ -804,34 +663,6 @@ def data_scaling(train):
 
 해당 부분은 시계열 데이터를 처리하여 LSTM 모델을 학습하기 위한 학습 데이터셋을 생성하는 코드이다.
 
-```python
-# x_train, y_train 생성
-def create_train(train,window_size, periods, sc):
-    
-    train_data = train.values
-    train_len = len(train_data)
-    
-    # 데이터 스케일링
-    train_scaled = sc.transform(train_data)
-    
-    # x, y 학습데이터 생성
-    x_train = []
-    y_train = []
-    for i in range(train_len - window_size - periods + 1):
-        x_train_end = i+window_size
-        x_train.append(train_scaled[i:x_train_end, 0]) 
-        y_train.append(train_scaled[x_train_end:x_train_end+periods, 0])
-    
-    # 리스트를 넘파이 배열로 변환
-    x_train, y_train = np.array(x_train), np.array(y_train)
-
-    # x_train를 텐서로 변환
-    x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
-
-    return x_train, y_train
-
-```
-
 - create_train(train, window_size, periods, sc) 인수 설명
     - train : train_test_split()에서 7대3 비율로 나눈 train data
     - window_size
@@ -849,16 +680,6 @@ def create_train(train,window_size, periods, sc):
 - train 데이터의 값에 대한 데이터 스케일링 처리
     - data_scaling 함수에서 fit 과정을 하였지만 스케일링 과정을 완료하려면 transform도 수행
 
-```python
-# x, y 학습데이터 생성
-    x_train = []
-    y_train = []
-    for i in range(train_len - window_size - periods + 1):
-        x_train_end = i+window_size
-        x_train.append(train_scaled[i:x_train_end, 0]) 
-        y_train.append(train_scaled[x_train_end:x_train_end+periods, 0])
-```
-
 - x_train
     - 모델에 입력될 학습 데이터로 각각의 데이터 포인트는 이전의 데이터를 나타내는 시퀀스, 해당 시퀀스 길이는 `window_size` 에 의해 결정
 - y_train
@@ -872,30 +693,6 @@ def create_train(train,window_size, periods, sc):
 
 - x, y 학습 데이터를 생성한 후 모델학습을 위해 numpy, tensor(x_train)로 변환 진행
 
-```python
-# x_test 생성
-def create_x_test(test,window_size, sc):
-    test_data = test.values
-    test_len = len(test_data)    
-    
-    # 데이터 스케일링
-    test_scaled = sc.transform(test_data)
-    
-    # x 테스트 데이터 생성
-    x_test = []
-    for i in range(test_len - window_size):
-        x_test_end = i+window_size
-        x_test.append(test_scaled[i:x_test_end, 0]) 
-    
-    # 리스트를 넘파이 배열로 변환
-    x_test =  np.array(x_test)
-
-    # x_test를 텐서로 변환
-    x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
-
-    return x_test
-```
-
 - create_x_test(test, window_size, sc) 인수 설명
     - test : train_test_split 함수에 의해 반환된 test를 인수로 사용
     - window_size : create_train의 window_size와 동일
@@ -904,36 +701,9 @@ def create_x_test(test,window_size, sc):
 
 ### 모델 생성
 
-```python
-def lstm_arch(x_train, y_train, periods, epochs, batch_size):
-    # 모델 구성 (LSTM 레이어 2개, 활성화함수: 하이퍼볼릭탄젠트 사용)
-    lstm_model = Sequential([
-        LSTM(units=50, return_sequences=True, input_shape=(x_train.shape[1], 1), activation='tanh'),
-        LSTM(units=50, activation='tanh'),
-        Dense(units=periods) 
-    ])
-    
-    # 모델 컴파일 (optimizer : SGD, 손실함수: MSE 사용)
-    lstm_model.compile(optimizer=SGD(learning_rate=0.01, decay=1e-7, momentum=0.9, nesterov=False), loss='mean_squared_error')
-    
-    # 모델 학습
-    lstm_model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, verbose=0, shuffle=False)
-    
-    return lstm_model
-```
-
 - lstm_arch 함수는 LSTM 모델을 생성하고 학습시키는 역할
 
 **lstm_arch 함수 상세 분석**
-
-```python
-    # 모델 구성 (LSTM 레이어 2개, 활성화함수: 하이퍼볼릭탄젠트 사용)
-    lstm_model = Sequential([
-        LSTM(units=50, return_sequences=True, input_shape=(x_train.shape[1], 1), activation='tanh'),
-        LSTM(units=50, activation='tanh'),
-        Dense(units=periods) 
-    ])
-```
 
 - 레이어를 선형으로 쌓은 구조를 갖는 Sequential 모델 생성
 - 첫 번째 LSTM 레이어를 추가
@@ -946,13 +716,7 @@ def lstm_arch(x_train, y_train, periods, epochs, batch_size):
     - return_sequences 설정하지 않았으므로 마지막 시간 step에서만 출력 반환
 - Dense 레이어
     - Dense 레이어는 출력 레이어로 units=periods로 설정되어 있어서 모델은 periods 크기의 출력을 생성
-    
-
-```python
-# 모델 컴파일 (optimizer : SGD, 손실함수: MSE 사용)
-    lstm_model.compile(optimizer=SGD(learning_rate=0.01, decay=1e-7, momentum=0.9, nesterov=False), loss='mean_squared_error')
-```
-
+      
 - 최적화 알고리즘
     - SGD(확률적 경사 하강법) 사용
 - Hyper parameter 설정
@@ -972,29 +736,6 @@ def lstm_arch(x_train, y_train, periods, epochs, batch_size):
 최종적으로 lstm_model을 반환하며, 이는 성능 평가 함수에서 이용된다.
 
 ### 모델 성능 평가
-
-```python
-# 모델 성능 평가
-def lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size):
-    # 예측
-    preds = lstm_model.predict(x_test)
-    # 원래 값으로 변환
-    preds = sc.inverse_transform(preds)
-    
-    # 실제값과 예측값을 비교하기 위한 데이터프레임 생성
-    predictions_plot = pd.DataFrame(columns=['actual', 'prediction'])
-    predictions_plot['actual'] = test.iloc[0:len(preds), 0]
-    predictions_plot['prediction'] = preds[:, 0]
-    
-    # RMSE 계산
-    mse = MeanSquaredError()
-    mse.update_state(np.array(predictions_plot['actual']), np.array(predictions_plot['prediction']))
-    RMSE = np.sqrt(mse.result().numpy())
-    
-    # 그래프
-    return (predictions_plot.plot(figsize=(15, 5), 
-                                title=f'lstm performance\nepochs={epochs}, batch size={str(batch_size)}, RMSE={str(round(RMSE, 4))}'))
-```
 
 **예측**
 
@@ -1026,42 +767,6 @@ def save_output(sc, lstm_model, plot):
     plt.savefig(f'{output_path}/lstm_performance_graph.tiff') # 그래프 저장
 ```
 
-### 기본값 실행
-
-```python
-def training(window_size, periods):
-    # 베스트 모델의 하이퍼 파라미터 사용
-    epochs = 700
-    batch_size = 32
-
-    # 데이터 읽어오기
-    filename = './Output/Data_preprocessing/preprocessed.csv'
-    df = read_data(filename)
-    
-    # 학습 데이터 / 테스트 데이터 분할
-    train, test = train_test_split(df)
-
-    # 데이터 스케일링
-    sc = data_scaling(train)
-
-    #  x_train, y_train, x_test 생성
-    x_train, y_train = create_train(train,window_size, periods, sc)
-    x_test = create_x_test(test,window_size, sc)
-
-    # 모델 생성
-    lstm_model = lstm_arch(x_train, y_train, periods, epochs, batch_size)
-
-    # 모델 성능 평가
-    plot = lstm_performance(lstm_model, sc, x_test, test, epochs, batch_size)
-
-    # 스케일러, 모델, 그래프 저장
-    save_output(sc, lstm_model, plot)
-
-```
-
-- `-l` 옵션을 통해 기본값(hyper parameter)으로 실행 가능한 코드
-
----
 
 ## 3_Prediction.py
 
@@ -1190,26 +895,6 @@ import os
 
 ### 데이터 읽어오기
 
-```python
-def read_data(file_name):
-    df = pd.read_csv(file_name, index_col = 0) 
-
-    # 데이터프레임 인덱스를 데이트타임인덱스로 변환
-    df.index = pd.to_datetime(df.index)
-    df.index.name = 'time'
-
-    # values 이름 추출
-    col = df.columns[0]
-
-    # float 변환
-    df[col] = pd.to_numeric(df[col], errors='coerce') 
-    df[col] = df[col].astype(float)
-    
-    # 인덱스 정렬
-    df = df.sort_index(ascending=True) 
-    return df
-```
-
 - read_data(file_name) 함수는 동일하므로 설명 생략
 
 ### 모델과 스케일러 불러오기
@@ -1229,60 +914,13 @@ def load_model_and_scaler():
 
 ### x_data 생성
 
-```python
-def create_x_new_data(new_data, window_size, sc):
-    data = new_data.values
-    data_len = len(data)
-    
-    # 학습 데이터 스케일링
-    data_scaled = sc.transform(data)
-    
-    # x 학습데이터 생성
-    x_data = []
-
-    for i in range(data_len - window_size):
-        x_data_end = i+window_size 
-        x_data.append(data_scaled[i:x_data_end, 0])
- 
-    # 리스트를 넘파이 배열로 변환
-    x_data =  np.array(x_data)
-
-    # x_data를 텐서로 변환
-    x_data = np.reshape(x_data, (x_data.shape[0], x_data.shape[1], 1))
-    
-    return x_data
-```
-
 - create_x_new_data(new_data, window_size, sc) 함수는 동일하므로 설명 생략
 
 ### 예측하기
 
-```python
-def predictions(x_data, lstm_model, sc):
-    # 예측
-    preds = lstm_model.predict(x_data)
-    # 원래 값으로 변환
-    preds = sc.inverse_transform(preds)
-    return preds
-```
-
 - predictions(x_data, lstm_model, sc) 함수는 동일하므로 설명 생략
 
 ### 예측값에 대한 시계열 데이터 생성
-
-```python
-# 예측값에 대한 시계열 데이터 생성
-def create_time_series_data(df, preds):
-    # values 이름 추출
-    col = df.columns[0]
-
-    # 예측값에 대한 시계열 데이터 생성
-    preds_df = pd.DataFrame(columns=[col],
-                            index=(df.loc[:, col][0:len(preds)]).index)
-    preds_df[col] = preds[:, 0]
-
-    return preds_df
-```
 
 - 시계열 데이터 생성
     - 주어진 Dataframe의 첫 번째 컬럼에 예측값을 채워서 새로운 Dataframe 생성
@@ -1290,35 +928,6 @@ def create_time_series_data(df, preds):
 - 예측값에 대한 시계열 데이터를 생성하는 이유는 이상치 검출 분석에 활용될 수 있음
 
 ### 이상치 검출
-
-```python
-def detection(preds_df, criteria):
-    # 학습 데이터의 통계표 읽어오기
-    table = pd.read_csv(criteria, index_col = 0) 
-    
-    # 열 추출
-    column_values = preds_df.iloc[:,0]
-
-    # 이상치 데이터 생성
-    if all(idx in table.index for idx in ['U_level', 'L_level']): # U_level와 L_level가 있는 경우
-        U_level = table.loc['U_level']['Values'] # upper limit 
-        L_level = table.loc['L_level']['Values'] # lower limit 
-        abnormal_df = preds_df[(column_values <= L_level) | (column_values >= U_level)]
-    
-    elif 'U_level' in table.index: # U_level만 있는 경우
-        U_level = table.loc['U_level']['Values']
-        abnormal_df = preds_df[column_values >= U_level]
-    
-    elif 'L_level' in table.index: # L_level만 있는 경우
-        L_level = table.loc['L_level']['Values'] 
-        abnormal_df = preds_df[column_values <= L_level]
-    
-    
-    if  abnormal_df.empty:
-        print('이상치가 없습니다.')
-    
-    return abnormal_df
-```
 
 - Data_processing.py에서 작성한 Anomalous 함수(이상치 보정)과 유사 함수
 - 기존과 다른 점은 이상치 데이터를 생성한 후 새로운 Dataframe에 저장
@@ -1338,43 +947,6 @@ def save_data(abnormal_df):
 ```
 
 - 이상치 데이터를 해당 경로에 저장
-
-### 기본값 실행
-
-```python
-def abnormal_detection(file_name,criteria):
-    # 파일 읽어오기
-    df = read_data(file_name)
-
-    # 데이터 전처리: 결측치 처리
-    if df.isnull().any().any():
-        df = preprocessing.Missing(df)
-
-    # 모델과 스케일러 불러오기
-    sc, lstm_model = load_model_and_scaler()
-
-    # 모델의 윈도우 사이즈 찾기
-    window_size = lstm_model.layers[0].input_shape[1]
-    
-    # x_data 생성
-    x_data = create_x_new_data(df, window_size, sc)
-
-    # 예측
-    preds = predictions(x_data, lstm_model, sc)
-
-    # 예측값에 대한 시계열 데이터 생성
-    preds_df = create_time_series_data(df, preds)
-
-    # 이상치 추출
-    abnormal_df = detection(preds_df, criteria)
-    
-    # 이상치 데이터 저장
-    save_data(abnormal_df)
-```
-
-- abnormal_detection(file_name, criteria) : `-a` 옵션을 사용하여 기본값으로 실행하는 함수
-
----
 
 ## Prediction.py
 
@@ -1401,43 +973,9 @@ def abnormal_detection(file_name,criteria):
 
 ### 예측 데이터 생성
 
-```python
-def create_predictive_data(df, preds):
-    col = df.columns[0]
-    last_index = df.index[-1] # # 데이터의 마지막 인덱스 찾기
-    periods = preds.shape[1] # # prediction window size 찾기
-    freq = pd.infer_freq(df.index) # 시간 간격 찾기
-
-    # 데이트타임 생성
-    preds_index = pd.date_range(str(last_index), periods=(periods+1), freq=freq)
-    preds_index = preds_index[1:] # 예측값의 데이트타임 추출
-
-    # 예측값의 시계열 데이터 생성
-    periods_df = pd.DataFrame(index=preds_index, columns=[col, 'label'])
-    periods_df[col] = list(preds[-1])
-    periods_df.index.name =  'time'
-
-    return periods_df
-```
-
 - 기존 df와 예측값 pred를 이용하여 예측값을 포함한 Dataframe인 periods_df 생성하고 이를 반환
 
 ### 레이블 채우기
-
-```python
-def fill_label(periods_df, abnormal_df):
-    col = periods_df.columns[0]
-    # 예측 데이터와 이상치 데이터의 인덱스에서 교집합 추출
-    common_index = periods_df.index.intersection(abnormal_df.index)
-    # label 채우기
-    periods_df.loc[common_index,'label'] = 'Abnormal' # 교집합: Abnormal
-    periods_df['label'].fillna('Normal', inplace=True) # 아니면 :Normal
-
-    for index, row in periods_df.iterrows():
-        print(f'\n시간: {index} - 예측 값: {row[col]}, 레이블: {row["label"]}')
-
-    return periods_df
-```
 
 - 예측값에 대한 시계열 데이터(periods_df)와 이상치를 포함하는 Dataframe인 abnormal_df를 인수로 받아서 레이블을 채우는 함수
 - 두 개의 Dataframe의 index를 교집합으로 하여 추출하는데, 이 과정을 통해 이상치가 예측값의 어느 부분에 위치해있는지를 파악 가능
@@ -1457,39 +995,3 @@ def save_data(periods_df):
 ```
 
 - 위 과정에서 label 속성에서 이상치까지 라벨링한 결과물을 설정한 경로에 저장
-
-### 기본값 실행
-
-```python
-def prediction(file_name, criteria):
-    # 데이터 읽어오기
-    df = read_data(file_name)
-    # 데이터 전처리: 결측치 처리, 시간 간격으로 병합
-    if df.isnull().any().any():
-        df = preprocessing.Missing(df)
-    df = preprocessing.TimeIntervalData(df, '1D') # 1시간 간격으로 병합 
-
-    # 모델과 스케일러 불러오기
-    sc, lstm_model = abnormal_detection.load_model_and_scaler()
-
-    # 모델의 윈도우 사이즈 찾기
-    window_size = lstm_model.layers[0].input_shape[1]
-    
-    # x_data 생성
-    x_data = abnormal_detection.create_x_new_data(df, window_size, sc)
-
-    # 예측
-    preds = abnormal_detection.predictions(x_data, lstm_model, sc)
-
-    # 예측값에 대한 시계열 데이터 생성
-    periods_df = create_predictive_data(df, preds)
-
-    # 이상치 검출
-    abnormal_df = abnormal_detection.detection(pd.DataFrame(periods_df.iloc[:,0]), criteria)
-
-    # 레이블 채우기s
-    periods_df = fill_label(periods_df, abnormal_df)
-
-    # 예측 데이터 저장
-    save_data(periods_df)
-```
