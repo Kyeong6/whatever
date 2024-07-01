@@ -9,3 +9,4 @@ wvr 인턴에서 수행한 프로젝트를 정리하는 레포입니다. <br/></
 |May|4th|[LSTM 모델 분석을 통해 배운 내용 정리](https://github.com/Kyeong6/whatever/blob/main/worklog/01_may/week4.md)|
 |May|5th|[LSTM 모델 코드 수정 및 추가](https://github.com/Kyeong6/whatever/blob/main/worklog/01_may/week5.md)|
 |June|1st|[다수의 예측값 얻기 및 시각화 진행](https://github.com/Kyeong6/whatever/blob/main/worklog/02_june/week1.md)|
+|July|1st|[제품 시안을 위한 질문사항](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week1.md)|
