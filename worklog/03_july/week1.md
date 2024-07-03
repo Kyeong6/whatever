@@ -163,12 +163,12 @@ finally:
 
 ### ETL pipeline
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/08524b50-3ff4-4aa7-9422-6bd633db9cc2/Untitled.png)
+![image](https://github.com/Kyeong6/whatever/assets/100195725/980163ad-2682-4c03-9c0f-de0075ec6099)
 
 자문을 받은 뒤 **데이터 수신 구성**에 신경을 쓰는 것이 아닌 통신 이후 과정인 **데이터 처리 구성**에 초점을 두어야함을 인지
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/eeea2133-88bd-40a3-bd75-b9304bef1c4d/Untitled.png)
- 
+![image](https://github.com/Kyeong6/whatever/assets/100195725/1d8d60ba-a095-4e23-9060-d781454afb4a)
+
 
 **Extract:** 데이터 수집 단계에서 수신한 데이터를 저장완료한 후 데이터 처리 단계에서의 **데이터 조회**에 해당
 
