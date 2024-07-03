@@ -147,7 +147,7 @@ finally:
     ser.close()
 ```
 
-### Flow
+### Flow example
 
 ![etl](https://github.com/Kyeong6/whatever/assets/100195725/f642452b-c30a-4023-bc8d-9231ab409398)
 
@@ -158,3 +158,70 @@ finally:
 **Reference**
 
 - Grafana 이용한 대시보드 구축 : [Grafana로 실내/외 공기질 대시보드 구축하기 | 청정수의 Tech blog](https://blog.chungjungsoo.dev/dev-posts/airgradient-grafana-integration/)
+<br/></br>
+## 7/3
+
+### ETL pipeline
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/08524b50-3ff4-4aa7-9422-6bd633db9cc2/Untitled.png)
+
+자문을 받은 뒤 **데이터 수신 구성**에 신경을 쓰는 것이 아닌 통신 이후 과정인 **데이터 처리 구성**에 초점을 두어야함을 인지
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/eeea2133-88bd-40a3-bd75-b9304bef1c4d/Untitled.png)
+ 
+
+**Extract:** 데이터 수집 단계에서 수신한 데이터를 저장완료한 후 데이터 처리 단계에서의 **데이터 조회**에 해당
+
+**Transform:** LSTM 모델이 예측하기 위한 형태로 변형
+
+**Load:** 해당 프로젝트에서는 모델의 결과값을 저장이 아닌 전송의 의미
+<br/></br>
+### 프로젝트의 목적
+
+1. 예측값 확인
+    - 주기(1시간)를 설정하면 관리자가 예측값을 보고 이후 행동을 진행할 수 있다
+2. 이상치 확인
+    - 예측값보다 확인하는 주기를 빠르게 설정해서 조기검출 진행
+<br/></br>
+
+**목적에 따른 방향성 설정**
+
+현재 LSTM pipeline 코드 상에서 Input 디렉토리에 csv파일을 넣어줘서 예측을 진행하고 있다. 
+
+해당 과정을 데이터베이스를 구축한 후 조회(Extract)하는 방향으로 설정
+
+- 어떤 데이터베이스를 사용할 것 인가?
+    - Sqlite : IoT, 임베디드 장치에 적합한 데이터베이스, server-less
+    - InfluxDB : 시계열 데이터에 특화된 데이터베이스(경량화되어있어서 임베디드 장치에도 사용 가능), not sever-less, NoSQL(조회속도 빠름) 구조
+<br/></br>
+
+**InfluxDB 특징**
+
+1. 시계열 데이터에 최적화 : 저장 및 조회
+    - 데이터는 시간 순서대로 저장
+    - 시간 범위를 기준으로 데이터를 조회하는 등의 작업이 매우 빠르고 효율적
+2. 높은 쓰기 및 쿼리 성능
+    - InfluxDB는 초당 수십만 개의 데이터 포인트를 쓸 수 있으며, 대량의 데이터에 대한 쿼리도 빠르게 처리
+    - 서버 모니터링, IoT, 실시간 분석 등의 분야에서 꼭 필요한 특징
+3. 데이터 다운샘플링 및 보존 정책
+    - InfluxDB는 자동으로 오래된 데이터를 다운샘플링하거나 삭제하는 기능을 제공
+    - 저장 공간을 효율적으로 관리 가능
+4. SQL-Like 쿼리 언어
+    - InfluxDB는 InfluxQL이라는 SQL과 유사한 쿼리 언어를 제공
+    - 익숙한 SQL 스타일의 문법으로 쿼리를 작성 가능
+5. 확장성
+    - InfluxDB는 클러스터링을 통해 데이터를 여러 노드에 분산시킬 수 있음
+    - 데이터의 양이 늘어나도 성능을 유지하거나 향상 가능
+6. 플러그인 시스템
+    - InfluxDB는 Telegraf라는 플러그인 시스템을 제공
+    - 다양한 소스에서 데이터를 수집하고, 다양한 출력 소스로 데이터를 전송 가능
+
+데이터베이스에 적재한 데이터를 조회한 후 모델이 예측할 수 있게 Transform 과정을 수행해야 한다.   
+현재 모델은 위에서 언급했듯이 Input 디렉토리에 존재하는 csv 파일을 통해서 예측을 수행한다. 
+<br/></br>
+**Transform 및 Prediction 과정**
+
+1. 데이터베이스 조회
+2. csv 변환 후 Input 디렉토리에 위치
+3. LSTM 모델 예측 수행
+4. Prediction.csv에 저장되는 결과값 전송
