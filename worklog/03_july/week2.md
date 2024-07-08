@@ -29,7 +29,7 @@
 
 ### 파이프라인 구성
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/b02b0157-4c03-4091-ad6f-cb8c9111142c/8273fb0b-2e2e-48ab-962e-76aa18da8e75.png)
+![Untitled](https://github.com/Kyeong6/whatever/assets/100195725/a41ae72c-678a-46dd-8306-ebbbc0f00f57)
 <br/></br>
 
 **Our works**
