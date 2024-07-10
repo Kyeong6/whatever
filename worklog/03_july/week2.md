@@ -1,7 +1,8 @@
 # 업무내용
 
 - 파이프라인 질문사항 작성
-
+- 파이프라인 설계
+  
 ## 7/8
 
 ### 질문사항
@@ -87,6 +88,7 @@
 | --- | --- |
 | 2024-07-09 0:00 | 224 |
 | 2024-07-09 0:01 | 227 |
+
 <br/></br>
 
 **예측값 플로우**
@@ -204,7 +206,8 @@ Learning_LSTM.py의 43줄 training.training(7, 1)에서 7이 window_size라서 1
 
 ### 파이프라인 설계 시안 도식화
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/f7b9a22f-af45-4ecc-818c-c498649386a8/Untitled.png)
+![LSTM_pipeline](https://github.com/Kyeong6/whatever/assets/100195725/02084da5-e262-45fc-bbac-dca6a77c867a)
+
 
 ### CSV 도입이유
 
