@@ -255,7 +255,7 @@ CSV 파일은 간단한 사용성을 제공하여, 최신 60개 항목만 조회
 </br></br>
 ### 파이프라인 설계 시안(ver. SQLite3)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/9d3ce179-37dc-41c5-ac11-0e3b404fd8c9/Untitled.png)
+![LSTM_pipeline_db](https://github.com/Kyeong6/whatever/assets/100195725/4e680ad7-d452-43a7-b1be-a21ddbf6ed7c)
 </br></br>
 ### **데이터베이스 테이블 구조**
 
