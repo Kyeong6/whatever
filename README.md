@@ -11,6 +11,7 @@ wvr 인턴에서 수행한 프로젝트를 정리하는 레포입니다. <br/></
 |June|1st|[다수의 예측값 얻기 및 시각화 진행](https://github.com/Kyeong6/whatever/blob/main/worklog/02_june/week1.md)|
 |July|1st|[제품 시안을 위한 질문사항](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week1.md)|
 |July|2nd|[파이프라인 설계](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week2.md)|
+|July|3rd|[파이프라인 개발](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week3.md)|
 
 <br/></br>
 
