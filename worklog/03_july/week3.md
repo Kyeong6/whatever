@@ -12,11 +12,11 @@
 
 **CSV**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/97dd4ed3-dbbb-4b9d-9cd8-7d821ffc2202/Untitled.png)
+<img width="807" alt="Untitled" src="https://github.com/user-attachments/assets/6e1f52da-9b8f-406f-a2ea-a6f5842842ee">
 
 **SQLite**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/57431a96-1ce3-40e4-b78f-c4be27f6265d/Untitled.png)
+<img width="807" alt="Untitled2" src="https://github.com/user-attachments/assets/985fe1de-5bc2-4ebf-9a03-c95af1a5c077">
 
 CSV와 SQLite 방식을 도입하여 성능 평가를 진행할 예정이다.
 
