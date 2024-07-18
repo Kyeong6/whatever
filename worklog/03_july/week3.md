@@ -63,7 +63,9 @@ SQLite를 도입하고, 이후에 성능 최적화를 진행할 예정이다.
 
 ### 프로젝트 플로우 재구성
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/694cf1d1-c889-4728-924b-1ee3dc917fd3/a647217b-2635-4256-9d33-6e0c66596771.png)
+<img width="1920" alt="LSTM-pipeline" src="https://github.com/user-attachments/assets/e5fded80-8e0c-42f1-b384-70f9e0d19427">
+협력업체인 엔지니어링 회사와의 회의 이후 프로젝트 플로우 변경
+<br/><br/>
 
 ### 플로우 설명
 
@@ -71,10 +73,10 @@ SQLite를 도입하고, 이후에 성능 최적화를 진행할 예정이다.
 | --- | --- | --- |
 | 1 | txt 파일 데이터 추출 | RS485 to USB 방식을 통해 얻은 txt 파일 데이터를 추출(규브장 사용) |
 | 2 | 데이터 적재 | 추출한 데이터를 데이터베이스(SQLite)에 적재(REAL_VAL_TB) : 1 min |
-| 3-1 (이상치) | 데이터베이스 조회 | 이상치 판단을 위해 REAL_VAL_TB 조회 : 1 min |
+| 3-1(이상치) | 데이터베이스 조회 | 이상치 판단을 위해 REAL_VAL_TB 조회 : 1 min |
 | 3-2 | 이상치 로직 수행 | 이상치 판단하는 로직 수행<br>- 유형 : 4 logics<br>- 수행력 : 3 logics |
 | 3-3 | 이상치 결과값 적재 | 이상치 로직 수행 후 결과값 AB_VAL_TB에 적재 |
-| 4-1 (예측) | 데이터베이스 조회 | 예측 진행을 위해 REAL_VAL_TB 조회 : 1 hr<br>주기가 1시간이므로 총 60 rows |
+| 4-1(예측) | 데이터베이스 조회 | 예측 진행을 위해 REAL_VAL_TB 조회 : 1 hr<br>주기가 1시간이므로 총 60 rows |
 | 4-2 | csv 파일 변환 (Input) | 데이터베이스 조회한 후 LSTM 예측 수행을 위해 csv 형식으로 변환한 뒤 Input 디렉토리에 위치 |
 | 4-3 | 예측 로직 수행 | 동일 방법에 따라 수행 |
 | 4-4 | csv 파일 추출 (Output) | 예측값 저장을 위한 Output 디렉토리에 존재하는 csv 파일 데이터 추출 |
