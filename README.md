@@ -17,5 +17,4 @@ wvr 인턴에서 수행한 프로젝트를 정리하는 레포입니다. <br/></
 
 
 ## LSTM 파이프라인
-
-![LSTM-pipeline](https://github.com/user-attachments/assets/d3d3f7b5-3508-43e4-9a72-45de14baeb59)
+![LSTM-pipeline](https://github.com/user-attachments/assets/d48c0ba4-4f2c-4771-9c80-e8ca578ee326)
