@@ -109,12 +109,14 @@ iD+1h 개념을 도입하기 위해 많은 과정이 필요했는데 수정한 �
 
 - pipeline_sample.csv(Input)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/5f214466-3674-45ea-9b51-0627f6b81cf3/Untitled.png)
+![스크린샷 2024-07-22 오후 4 49 13](https://github.com/user-attachments/assets/948fcddb-6413-4475-b7f1-1105ba11fe2c)
+
 
 테스트 데이터는 2020-04-16 4:00 ~ 4:59 데이터를 사용했다.
 
 - prediction.csv(Output)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/e76733ea-7bf7-4649-8371-bccaff3704de/Untitled.png)
+![스크린샷 2024-07-22 오후 4 50 05](https://github.com/user-attachments/assets/55e1d2dd-f22f-4077-9f78-0496d3e2d41d)
+
 
 iD+1H 형식으로 예측 결과값이 잘 나왔음을 알 수 있다.
