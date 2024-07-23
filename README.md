@@ -1,5 +1,5 @@
-# whatever
-wvr 인턴에서 수행한 프로젝트를 정리하는 레포입니다. <br/></br>
+# WVR
+WVR 인턴 과정에서의 업무일지 정리 레포입니다. <br/></br>
 
 ## 업무 일지
 
@@ -13,10 +13,3 @@ wvr 인턴에서 수행한 프로젝트를 정리하는 레포입니다. <br/></
 |July|2nd|[파이프라인 설계](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week2.md)|
 |July|3rd|[파이프라인 개발](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week3.md)|
 |July|4th|[파이프라인 세부사항 개발](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week4.md)|
-
-<br/></br>
-
-
-## LSTM 파이프라인
-
-<img width="1920" alt="LSTM-pipeline" src="https://github.com/user-attachments/assets/223888c3-ac68-4582-8934-2a4d94a80ad9">
