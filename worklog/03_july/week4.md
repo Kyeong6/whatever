@@ -192,4 +192,4 @@ CRUD(crud.py) $\subset$ API(src) $\subset$ 스케줄링(scheduling.py) $\subset$
 
 **수정한 아키텍처**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/97bd34c1-88d0-4970-8f9f-62a90e70901b/Untitled.png)
+<img width="1920" alt="LSTM-pipeline" src="https://github.com/user-attachments/assets/6818bd91-2ffb-4dfc-af0f-bbc293c02b95">
