@@ -2,7 +2,7 @@
 
 - 파이프라인 세부사항 개발 시작
 
-## 7/22
+## 7/22 ~ 23
 
 ### 수행할 것
 
@@ -120,3 +120,76 @@ iD+1h 개념을 도입하기 위해 많은 과정이 필요했는데 수정한 �
 
 
 iD+1H 형식으로 예측 결과값이 잘 나왔음을 알 수 있다.
+
+### 3. 파이프라인 디렉토리 구조
+
+**디렉토리 구조** 
+
+```bash
+project_root/
+├── core/
+│   ├── config.py                  # 경로, 환경변수 등 구성 파일
+├── data/
+│   ├── input/                     # lstm 예측을 위한 파일 
+│   │   ├── sample.csv
+│   ├── output/                    # Input에 기반하여 얻은 lstm 예측 사용 및 결과 파일
+│   │   ├── Data_preprocessing/
+│   │   │   ├── criteria.csv
+│   │   │   └── preprocessed.csv
+│   │   ├── Learning_lstm/
+│   │   │   ├── lstm_model.h5
+│   │   │   ├── lstm_performance_graph.tiff
+│   │   │   └── scaler.pkl
+│   │   └── Prediction/
+│   │       └── prediction.csv
+│   ├── raw/                       # 센서 관련 데이터
+│   │   ├── from_sensor_data.txt   # 센서로부터 받은 데이터
+│   │   ├── to_sensor_data.txt     # 센서로 보내야하는 데이터
+├── db/
+│   ├── crud.py                    # 데이터베이스 CRUD 작업 코드
+│   ├── database.py                # 데이터베이스 연결
+│   ├── models.py                  # 데이터베이스 테이블 설정
+│   ├── schema.py                  # 데이터베이스 테이블 속성 정의 
+├── src/                           # 소스 코드 디렉토리
+│   ├── txt_transform.py           # txt 파일 추출 및 구성 파일
+│   ├── database_utils.py          # 데이터베이스 적재 및 조회 수행
+│   ├── outlier_detection.py       # 이상치 검출 파일
+│   ├── csv_transform.py           # csv 파일 구성(input)
+│   ├── lstm/                      # LSTM 예측 코드 
+│   │   ├── 1_Preprocessing_tool.py
+│   │   ├── 2_Learning_LSTM.py
+│   │   ├── 3_Prediction.py
+│   │   ├── abnormal_detection.py
+│   │   ├── data_preprocessing.py
+│   │   ├── prediction.py
+│   │   └── training.py
+│   ├── scheduling.py              # 스케줄링 적용 코드
+├── logs/                          # 로그 파일 설정
+│   ├── etl.log
+│   ├── lstm.log
+│   ├── outlier.log
+│   └── errors.log
+├── docs/                          
+│   ├── architecture.md            # 데이터 파이프라인 구조 설명
+│   ├── data_format.md             # 프로젝트에 사용되는 데이터 구조 설명
+│   └── usage.md                   # 데이터 파이프라인 실행 방법 설명
+├── errors/
+│   ├── custom_exceptions.py       # 커스텀 예외처리 설정
+│   ├── error_handler.py           # 예외처리 응답 
+├── tests/                         # 기능 테스트(추후 업데이트) 
+├── main.py                        # 실행 파일
+```
+
+모듈화에 초점을 맞춰 위와 같은 디렉토리 구조를 구상했다.
+
+기능 실행에 관해서 간단하게 설명하면 다음과 같다.
+
+CRUD(crud.py) $\subset$ API(src) $\subset$ 스케줄링(scheduling.py) $\subset$ main.py
+
+또한, 디렉토리 구조를 구상해나가면서 기존에는 txt 파일의 데이터를 추출한 후 DB에 적재하고 이를 통해서 이상치 판단 & LSTM 예측 수행을 하려했으나 굳이 이럴 필요 없이 txt_transform.py에 존재하는 txt 데이터 추출 함수의 반환값을 통해 DB 적재 및 이상치 판단 혹은 LSTM 예측을 동시에 진행하는, 즉 2개의 프로세스로 구분하기로 결정했다. 
+
+위 방식을 택하면 DB에 접근하는 횟수가 적어 시간적 비용을 아낄 수 있을거라 판단된다. 
+
+**수정한 아키텍처**
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/97bd34c1-88d0-4970-8f9f-62a90e70901b/Untitled.png)
