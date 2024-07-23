@@ -197,4 +197,7 @@ model/LSTM_pipeline/Check/
 # model algorithm
 model/
 
+# worklog 제외 적용
+analysis/
+visualization/
 # End of https://www.toptal.com/developers/gitignore/api/jupyternotebooks,python,dotenv
