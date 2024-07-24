@@ -132,64 +132,7 @@ iD+1H 형식으로 예측 결과값이 잘 나왔음을 알 수 있다.
 
 ### 3. 파이프라인 디렉토리 구조
 
-**디렉토리 구조** 
-
-```bash
-project_root/
-├── core/
-│   ├── config.py                  # 경로, 환경변수 등 구성 파일
-├── data/
-│   ├── input/                     # lstm 예측을 위한 파일 
-│   │   ├── sample.csv
-│   ├── output/                    # Input에 기반하여 얻은 lstm 예측 사용 및 결과 파일
-│   │   ├── Data_preprocessing/
-│   │   │   ├── criteria.csv
-│   │   │   └── preprocessed.csv
-│   │   ├── Learning_lstm/
-│   │   │   ├── lstm_model.h5
-│   │   │   ├── lstm_performance_graph.tiff
-│   │   │   └── scaler.pkl
-│   │   └── Prediction/
-│   │       └── prediction.csv
-│   ├── raw/                       # 센서 관련 데이터
-│   │   ├── from_sensor_data.txt   # 센서로부터 받은 데이터
-│   │   ├── to_sensor_data.txt     # 센서로 보내야하는 데이터
-├── db/
-│   ├── crud.py                    # 데이터베이스 CRUD 작업 코드
-│   ├── database.py                # 데이터베이스 연결
-│   ├── models.py                  # 데이터베이스 테이블 설정
-│   ├── schema.py                  # 데이터베이스 테이블 속성 정의 
-├── src/                           # 소스 코드 디렉토리
-│   ├── txt_transform.py           # txt 파일 추출 및 구성 파일
-│   ├── database_utils.py          # 데이터베이스 적재 및 조회 수행
-│   ├── outlier_detection.py       # 이상치 검출 파일
-│   ├── csv_transform.py           # csv 파일 구성(input)
-│   ├── lstm/                      # LSTM 예측 코드 
-│   │   ├── 1_Preprocessing_tool.py
-│   │   ├── 2_Learning_LSTM.py
-│   │   ├── 3_Prediction.py
-│   │   ├── abnormal_detection.py
-│   │   ├── data_preprocessing.py
-│   │   ├── prediction.py
-│   │   └── training.py
-│   ├── scheduling.py              # 스케줄링 적용 코드
-├── logs/                          # 로그 파일 설정
-│   ├── etl.log
-│   ├── lstm.log
-│   ├── outlier.log
-│   └── errors.log
-├── docs/                          
-│   ├── architecture.md            # 데이터 파이프라인 구조 설명
-│   ├── data_format.md             # 프로젝트에 사용되는 데이터 구조 설명
-│   └── usage.md                   # 데이터 파이프라인 실행 방법 설명
-├── errors/
-│   ├── custom_exceptions.py       # 커스텀 예외처리 설정
-│   ├── error_handler.py           # 예외처리 응답 
-├── tests/                         # 기능 테스트(추후 업데이트) 
-├── main.py                        # 실행 파일
-```
-
-모듈화에 초점을 맞춰 위와 같은 디렉토리 구조를 구상했다.
+모듈화에 초점을 맞춰 디렉토리 구조를 구상했다. (상세한 디렉토리 구조는 생략)
 
 기능 실행에 관해서 간단하게 설명하면 다음과 같다.
 
@@ -202,3 +145,109 @@ CRUD(crud.py) $\subset$ API(src) $\subset$ 스케줄링(scheduling.py) $\subset$
 **수정한 아키텍처**
 
 <img width="1920" alt="LSTM-pipeline" src="https://github.com/user-attachments/assets/6818bd91-2ffb-4dfc-af0f-bbc293c02b95">
+
+
+### 4. 파이프라인 구축 진행
+
+**1-1. 기존 LSTM 경로 수정**
+
+현재 예측값 도출 구조는 LSTM_pipeline으로 설정되어있어 프로젝트를 확장하면 이에 따라 경로 수정이 필요하다. 
+
+즉, src/lstm에 위치한 스크립트에서 사용하는 criteria.csv, preprocessed.csv, prediction.csv 등의 저장 경로를 data/output으로 변경이 필요하다.
+
+**1-2. Root 디렉토리를 Project root로 설정**
+
+환경변수를 사용하여 경로를 설정했다. 환경변수는 core/config.py에 존재하여 src/lstm/{file} 해당 파일 스크립트에 `from core.config import settings` 를 작성하면 `ModuleNotFoundError`가 발생한다. 
+
+이를 해결하기 위해서 다음과 같은 코드를 작성하여 해결했다.
+
+```python
+import sys
+import os 
+
+# Root directory를 Project Root로 설정
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+sys.path.append(project_root)
+os.chdir(project_root)
+```
+
+- project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+    - core 디렉토리에 접근하기 위해 두 레벨 (’../../’) 위로 올라간 후 절대경로로 변경
+- sys.path.append(project_root)
+    - sys.path에 project_root를 추가하여 core.config 가져오기 올바르게 작동
+- os.chdir(project_root)
+    - 작업 디렉토리를 project_root로 변경하여 수행하는 스크립트의 작업이 프로젝트 루트(not project_root)와 관련된 파일 탐색(data/ …)
+
+**1-3.명령어 예시**
+
+명령어 프로젝트 루트인 WVR 디렉토리에서 실행한다.
+
+- 1_Preprocessing_tool.py
+
+```bash
+python src/lstm/1_Preprocessing_tool.py -f data/input/sample.csv -p
+```
+
+- 2_Learning_LSTM.py
+
+```bash
+python src/lstm/2_Learning_LSTM.py -l
+```
+
+- 3_Prediction.py
+
+```bash
+python src/lstm/3_Prediction.py -f data/input/pipeline_sample.csv -a
+```
+
+**2-1. CRUD 작업 스크립트 : crud.py** 
+
+프로젝트에서 다수의 CRUD 작업이 존재한다. 사용되는 CRUD 작업을 함수화하여 src에 존재하는 기능 스크립트들이 함수(기능)를 호출하여 진행하고자 한다.(모듈화)
+
+- 테이블 생성(Create)
+- LSTM 예측 진행을 위한 조회(Read)
+- 실제값 적재(Load)
+- 이상치, 예측값 적재(Load)
+
+**2-2. txt 변환 스크립트 : transform.py**
+
+첫 번째와 마지막 단계인 txt 변환 작업을 수행하는 transform.py의 필요한 요소는 다음과 같다.
+
+- Database
+    - txt 파일을 읽어 데이터베이스에 적재하는 함수
+- 이상치
+    - txt 파일을 읽어 이상치 판단에 사용할 수 있게 반환값 설정하는 함수
+    - 이상치 판단 스크립트의 반환값을 txt로 변환한 후 sensor/to_sensor_outlier_data.txt 위치시키는 
+    함수
+- 예측
+    - txt 파일을 읽어 csv 형식으로 변환하여 input 디렉토리에 위치시키는 함수
+    - prediction.csv을 txt로 변환한 후 sensor/to_sensor_pred_data.txt 위치시키는 함수
+
+transform.py에는 3개의 객체(Class)로 나눌 수 있어 3개의 클래스 내부에 기능(함수)를 넣을 예정이다.
+
+**2-3. LSTM 예측 스크립트**
+
+src/lstm 디렉토리의 파일들은 앞선 업무 일지에서 정리했기 때문에 생략한다.
+
+**2-4. 이상치 검출 스크립트 : outlier_detection.py**
+
+이상치 검출은 4가지 단계가 존재한다. 
+
+- System abnormal
+- Real value abnormal
+- Prediction value abnormal
+- Night flow abnormal
+
+4가지 검출 방법에서 유량은 4개 모두, 수압력은 Night flow abnormal을 제외한 3가지를 적용한다. 
+
+유량, 수압력 2개의 객체(Class)로 나누어 검출 방법을 함수화하여 클래스 내부에 넣을 예정이다. 
+
+**2-5. 스케줄링 스크립트 : scheduling.py**
+
+2-1 ~ 2-4 스크립트에 작성한 기능을 호출해서 특정 시간에 수행할 수 있게 스케줄링을 적용한다. 
+
+최종적으로 scheduling.py에 존재하는 함수(or Class)를 루트 디렉토리에 존재하는 main.py에서 호출하여 실행하는 구조이다. 
+
+**2-6. 기능 수행 결론**
+
+CRUD(crud.py) $\subset$ API(src) $\subset$ 스케줄링(scheduling.py) $\subset$ main.py
