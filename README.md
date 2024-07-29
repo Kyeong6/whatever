@@ -17,6 +17,7 @@ WVR 인턴 과정에서의 업무일지 정리 레포입니다. <br/></br>
 
 
 ## 학습 내용
-|Category|Tool|Description|
+|Category|Detail|Description|
 |------|---|---|
 |데이터베이스|SQLite3|[SQLite3 학습](https://pool-roast-1d0.notion.site/Sqlite3-7b90856277074ce6a2af5b8cd52c5107?pvs=4)|
+|파이프라인|데이터 파이프라인 구축|[데이터 파이프라인 핵심 가이드](https://pool-roast-1d0.notion.site/Data-Pipeline-d81aafe02ed24b8a8be88eeedb26ec01?pvs=4)|
