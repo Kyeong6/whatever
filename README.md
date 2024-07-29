@@ -13,3 +13,4 @@ WVR 인턴 과정에서의 업무일지 정리 레포입니다. <br/></br>
 |July|2nd|[파이프라인 설계](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week2.md)|
 |July|3rd|[파이프라인 개발](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week3.md)|
 |July|4th|[파이프라인 세부사항 개발](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week4.md)|
+|July|5th|[프로젝트에서 사용할 기술 선택 이유](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week5.md)|
