@@ -14,11 +14,12 @@ WVR 인턴 과정에서의 업무일지 정리 레포입니다. <br/></br>
 |July|3rd|[파이프라인 개발](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week3.md)|
 |July|4th|[파이프라인 세부사항 개발](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week4.md)|
 |July|5th|[프로젝트에서 사용할 기술 선택 이유](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week5.md)|
+|August|1st|[개발 진행 정리](https://github.com/Kyeong6/whatever/blob/main/worklog/04_august/week1.md)|
 
 
 ## 학습 내용
 |Category|Detail|Description|
 |------|---|---|
 |Database|SQLite3|[SQLite3 학습](https://pool-roast-1d0.notion.site/Sqlite3-7b90856277074ce6a2af5b8cd52c5107?pvs=4)|
-|Pipeline|데이터 파이프라인 구축|[데이터 파이프라인 핵심 가이드](https://pool-roast-1d0.notion.site/Data-Pipeline-d81aafe02ed24b8a8be88eeedb26ec01?pvs=4)|
+|Pipeline|데이터 파이프라인 구축|[데이터 파이프라인 핵심 가이드](https://pool-roast-1d0.notion.site/2212ca2434af42dabaf20d4ef4709ca8?pvs=4)|
 |Scheduler|APScheduler|[APScheduler 학습(공식문서)](https://pool-roast-1d0.notion.site/Scheduler-12f988dd647a4da5b22da05f337f11d6?pvs=4)|
