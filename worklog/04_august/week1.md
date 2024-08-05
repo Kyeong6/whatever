@@ -52,7 +52,8 @@ SQLite는 파일 기반 데이터베이스이기 때문에 한 번에 하나의 
 
 참고로 단순히 테이블을 확인하는 것은 문제가 없고, 쓰기 작업(SQL문 작성 후 실행)을 할 경우 문제가 된다. 
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0c79766f-e6e5-47fb-bb1f-6711656123dd/db74789c-f8e9-4e4e-a881-e03624f8ebc9/Untitled.png)
+<img width="1251" alt="스크린샷 2024-08-05 오후 4 14 20" src="https://github.com/user-attachments/assets/a65383c6-bb50-48e6-802b-ce2d8139ab76">
+
 
 만약 GUI에서 SQL문을 수행해야하는 상황이라면 SQL문을 실행한 후 이미지 오른쪽에 `Close Database` 를 누르자!
 
