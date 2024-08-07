@@ -92,3 +92,38 @@ SQLite는 파일 기반 데이터베이스이기 때문에 한 번에 하나의 
         - 예측 수행 : 유량 / 수압력 예측 진행 후 데이터 저장 및 txt 변환 (3)
 
 **유량 / 수압력을 예측을 수행할 때 나눠서 진행해야하므로 src/lstm 디렉토리에 존재하는 파일들 수정 필요!**
+- data/output/Learning_lstm 디렉토리에 /flow_rate, /pressure를 생성한 후 유량과 수압력 예측을 진행할 때 해당하는 디렉토리의 모델 파라미터와 스케일러를 사용하도록 구현 완료
+    - 수정 파일 : 3_Prediction.py, Prediction.py, Abnormal_detection.py
+- 1년을 주기로 모델을 학습한 후 학습 결과를 각각 다음 위치에 배치하는 기능 구현 완료
+    - 유량 : data/output/Learning_lstm/flow_rate
+    - 수압력 : data/output/Learning_lstm/pressure
+
+<br/></br>
+**1년 데이터를 이용한 학습 진행**
+
+1년 동안 센서에서 얻은 데이터를 가지고 학습을 진행하는 코드를 테스트하기 위해 약 9개월 정도의 분당 데이터(396,001 rows)를 REAL_VAL_TB(실제값 저장 테이블)에 적재하였다. 
+
+```bash
+# 명령어 : python tests/test_insert_sensor_data.py
+# 결과
+Start insert sensor data
+Finish insert sensor data
+ 194.3468 sec
+cpu usage               : 57.8 %
+memory usage            : 0.02 GB
+```
+
+이후 코드를 수정하여 유량(flow rate)과 수압력(pressure) 데이터를 기반으로 두 번의 학습을 진행하였다. 
+
+약 40만 행 데이터를 학습하는 시간은 다음과 같다.
+
+(스크린샷 추가 필요)
+
+**기본적인 기능 구현 완료**
+
+1년 데이터를 이용한 학습 진행을 끝으로 기본적인 기능 구현은 완료했다.   
+이후 진행할 사항은 다음과 같다.
+
+- 약 40만 행(실제는 가장 많이 존재할 경우가 52만행) 데이터에서 조회 성능 파악 후 **파티션 기능**(개월수에 따른) 추가 여부 확인
+- 최종적인 스케줄러 도입(APScheduler)
+- 1년에 한 번 학습이 진행할 때 1분 단위의 데이터 수집 및 이상치 검출, 1시간 단위의 예측값 얻는 기능이 실행되어야하기 때문에 분산 처리 도입(Celery)
