@@ -15,6 +15,7 @@ WVR 인턴 과정에서의 업무일지 정리 레포입니다. <br/></br>
 |July|4th|[파이프라인 세부사항 개발](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week4.md)|
 |July|5th|[프로젝트에서 사용할 기술 선택 이유](https://github.com/Kyeong6/whatever/blob/main/worklog/03_july/week5.md)|
 |August|1st|[개발 진행 정리](https://github.com/Kyeong6/whatever/blob/main/worklog/04_august/week1.md)|
+|August|2nd|[최종 워크플로 설정 및 프로젝트 진행](https://github.com/Kyeong6/whatever/blob/main/worklog/04_august/week2.md)|
 
 
 ## 학습 내용
@@ -23,3 +24,4 @@ WVR 인턴 과정에서의 업무일지 정리 레포입니다. <br/></br>
 |Database|SQLite3|[SQLite3 학습](https://pool-roast-1d0.notion.site/Sqlite3-7b90856277074ce6a2af5b8cd52c5107?pvs=4)|
 |Pipeline|데이터 파이프라인 구축|[데이터 파이프라인 핵심 가이드](https://pool-roast-1d0.notion.site/2212ca2434af42dabaf20d4ef4709ca8?pvs=4)|
 |OS|Concurrency & Parallelism|[Concurrency & Parallelism 학습](https://pool-roast-1d0.notion.site/Concurrency-Parallelism-bd9a5eade0024053858f3258ec4750c6?pvs=4)|
+|Network|Serial|[Serial 통신 학습](https://pool-roast-1d0.notion.site/Serial-305cbb863593487b8bf1981a49cb6632?pvs=4)|
