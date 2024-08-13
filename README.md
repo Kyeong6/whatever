@@ -22,6 +22,6 @@ WVR 인턴 과정에서의 업무일지 정리 레포입니다. <br/></br>
 |Category|Detail|Description|
 |------|---|---|
 |Database|SQLite3|[SQLite3 학습](https://pool-roast-1d0.notion.site/Sqlite3-7b90856277074ce6a2af5b8cd52c5107?pvs=4)|
-|Pipeline|데이터 파이프라인 구축|[데이터 파이프라인 핵심 가이드](https://pool-roast-1d0.notion.site/2212ca2434af42dabaf20d4ef4709ca8?pvs=4)|
+|Scheduler|APScheduler|[APScheduler 학습](https://pool-roast-1d0.notion.site/APScheduler-11c5a56e26e54db19eaf2456c66e43cf?pvs=4)|
 |OS|Concurrency & Parallelism|[Concurrency & Parallelism 학습](https://pool-roast-1d0.notion.site/Concurrency-Parallelism-bd9a5eade0024053858f3258ec4750c6?pvs=4)|
 |Network|Serial|[Serial 통신 학습](https://pool-roast-1d0.notion.site/Serial-305cbb863593487b8bf1981a49cb6632?pvs=4)|
