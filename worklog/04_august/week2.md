@@ -26,6 +26,8 @@
     - 1 hr : 학습용
         - 실측값 테이블 조회(1 yr) → LSTM 학습 수행(데이터 전처리 → 학습) → 모델 파일, 스케일러 파일 저장(output/Learning_lstm/flow_rate, output/Learning_lstm/pressure)
 
-**최종 워크플로 도식화**
+**최종 아키텍처 및 워크플로 도식화**
 
-![workflow](https://github.com/user-attachments/assets/46f2fa38-51a4-4f5e-989f-6c8f84b02d78)
+| <img src="https://github.com/user-attachments/assets/99ef69a0-2717-428d-bf80-1d26ef8980af" alt="lstm-pipeline" width="500" /> | <img src="https://github.com/user-attachments/assets/47edcf8f-db80-4af9-bb2a-9e999ec0f971" alt="workflow" width="500" /> | 
+| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ | 
+| <div style="text-align: center;">LSTM pipeline &nbsp;&nbsp;&nbsp;</div>                                                         | <div style="text-align: center;">Workflow &nbsp;&nbsp;&nbsp;</div>                                                         |
