@@ -146,3 +146,32 @@ def create_night_val_table(conn):
         - 이상치 기준을 함수로 구현한 후 유량 클래스(outlier_detection.py)에서 조건문을 사용하여 초기에만 initial_data.txt 사용하는 야간 유량 기준 수행
     - night_flow_value.py
         - 10분 간의 데이터를 이용하여 평균값 DB 적재
+
+
+## 8/21
+
+### 이상치 코드 리팩토링 진행
+
+build_criteria.py(기준 정의)와 outlier_method.py(이상치 검출 방식 정의)간의 연결하는 작업에 어려움을 겪고있어 아키텍처부터 다시 파악하며 구현을 진행
+
+![image.png](https://github.com/user-attachments/assets/8b2574c1-94f5-4a36-8728-7ca5573663fd)
+
+1. 이상치 기준 정의(build_criteria.py)
+
+이상치 검출을 위해서는 사전에 기준 정의가 필요하다. build_criteria.py의 서버가 실행되고 이상치 관련 코드 중 처음으로 작동되어야하는 건 CriteriaBuilder 클래스 내부의 메서드
+
+2. 이상치 검출 방식(outlier_method.py)
+
+기준 정의 내용이 존재하는 txt 파일에서 각 이상치 검출 방식에 사용되는 요소를 추출(CriteriaBuilder의 load_criteria_from_txt 메서드 활용)하여 적용
+
+현재 이상치 검출 관리 클래스(AnomalyDetector)를 이용하여 최종적인 이상치 관리를 수행하려 했지만, 도메인에 따른 이상치 진행 파일(outlier_detection.py)로 이전
+
+3. 도메인에 따른 이상치 검출 진행(outlier_detection.py)
+
+도메인(유량 / 수압력)에 따라서 각각 클래스를 사용하여 최종적인 이상치 검출을 진행한다. 이상치 검출 방식 스크립트(outlier_method.py)에 존재하던 이상치 검출 관리 클래스(AnomalyDetector) 내용과 전반적인 검출 내용을 도메인에 맞게 구성한 후 스케줄링 스크립트에 클래스를 포함시켜 기능 구현 완료
+
+4. 야간 유량 데이터 저장
+
+이상치 기준을 정의할 때 서버를 실행하고 초기에는 실측값이 없어 미리 세팅해놓은 txt 파일을 이용하여 기준을 정의
+
+3개월이 지난 시점부터는 DB에 적재된 내용을 기반으로 기준을 정의하므로 야간 유량 10분 데이터의 평균값을 DB(NIGHT_FLOW_VAL_TB)에 적재
