@@ -175,3 +175,200 @@ build_criteria.py(기준 정의)와 outlier_method.py(이상치 검출 방식 �
 이상치 기준을 정의할 때 서버를 실행하고 초기에는 실측값이 없어 미리 세팅해놓은 txt 파일을 이용하여 기준을 정의
 
 3개월이 지난 시점부터는 DB에 적재된 내용을 기반으로 기준을 정의하므로 야간 유량 10분 데이터의 평균값을 DB(NIGHT_FLOW_VAL_TB)에 적재
+
+
+## 8/22
+
+### Serial 통신을 이용한 센서 데이터 수집 로직 수행
+
+데이터 수집(SensorReceiver) 및 송신(SensorTransmitter) 클래스 내부에 메서드를 생성하여 Serial 통신을 진행한다.
+
+**SensorReceiver**
+
+- 시리얼 통신을 통한 데이터 수신(read_data)
+- 데이터 파싱(parse_sensor_data)
+- 데이터베이스에 적재(load_sensor_data_to_db)
+- 전체 실행 로직(receiver)
+
+**SensorTransmitter**
+
+- 알림 데이터 송신(send_alert)
+- 서버 데이터 송신(send_server)
+- 전체 실행 로직(transmit)
+
+Serial 통신까지 어느 정도 구현이 되어서 남은 부분은 다음과 같다.
+
+1. 스크립트 간의 연결 + 스케줄링 도입
+2. 동시성 개념 도입
+3. 예외처리
+
+### 스크립트 간의 연결
+
+스크립트 간의 연결짓는 작업을 수행하기 위해서는 작업 주기별 정리가 필요하다.
+
+- 1 min : 알림용
+    - 센서 데이터 수집 → 실측값 테이블 적재 → 이상치 검출 → 검출 결과 DB 적재 → 알림 / 서버용 txt 파일 구성(data/sensor/alert.txt, data/sensor/server.txt)
+    - 서버 실행 후 1년이 지날 경우 데이터 삭제(해당 시간 - 365 day)
+- 10 min : 서버용
+    - 1 min 작업에서 서버용 텍스트 파일을 분마다 구성하고 있고, 만약 1 hr 작업이 수행된다면 예측 속성에 값 넣기(정각이 아닌 경우는 예측 속성 값 NULL)
+- 1 hr : 예측용
+    - 실측값 테이블 조회(60 rows) → csv 변환 수행(input) → LSTM 예측 수행 → 예측값 DB 적재 → 예측값 서버용 텍스트파일 구성
+- 3 mon : 이상치 기준 설정
+    - 실측값 및 야간 유량 테이블 조회 → 이상치 기준 설정 및 변경
+- 1 hr : 학습용
+    - 실측값 테이블 조회(1 yr) → LSTM 학습 수행(데이터 전처리 → 학습) → 모델 파일, 스케일러 파일 저장(output/Learning_lstm/flow_rate, output/Learning_lstm/pressure)
+
+
+### 💡 데이터 송 / 수신
+
+
+**실측 데이터 수집**
+
+- 스크립트 : serial.py
+- 단위 : 1 min
+- 순서
+    - 센서 데이터 수집 : SensorReceiver.read_data()
+    - 데이터 파싱 : SensorReceiver.parse_sensor_data()
+    - 실측 데이터 적재 : SensorReceiver.load_sensor_data_to_db()
+    - 실행 : SensorReceiver.receiver()
+- 설명
+    - 데이터 파싱한 결과(반환값 : data)를  이상치 검출 로직에서 사용
+
+**이상치 / 예측 데이터 송신: 알림용**
+
+- 스크립트 : serial.py
+- 단위 : 1 min
+- 순서
+    - 이상치 결과값 전송 : MinuteTransmitter.transmit()
+- 설명
+    - 이상치 검출 스크립트의 결과값들을 transmit 함수 인자로 설정
+
+**이상치 / 예측 데이터 송신: 서버용**
+
+- 스크립트 : serial.py
+- 단위 : 10 min
+- 순서
+    - 이상치 / 예측 결과값 전송 :TenMinuteTransmitter.transmit()
+- 설명
+    - 이상치 검출 및 LSTM 예측 스크립트의 결과값들을 transmit 함수 인자로 설정
+    - 예측값 같은 경우 날짜별 값을 리스트로 설정(변환 작업 포함)
+- 변경사항
+    - 서버용 같은 경우 텍스트파일에 저장(10 rows)한 내용을 보내기, 예측값이 존재(hr 정각)하는 제외한 경우는 0으로 설정
+
+
+### 💡 이상치 검출
+
+**이상치 기준 정의**
+
+- 스크립트 : build_criteria.py
+- 단위 : 3 month
+- 순서
+    - txt 파일(initial_data.txt) 조회 (초기 서버 실행) : CriteriaBuilder.load_data_from_file()
+    - DB(REAL_VAL_TB) 조회(서버 실행후 3개월 이후) : CriteriaBuilder.load_data_from_db()
+    - 이상치 기준 계산 : CriteriaBuilder.calculate_criteria()
+    - 기준 txt 파일(flow_rate_criteria.txt / pressure_criteria.txt) 저장 : 
+    CriteriaBuilder.save_criteria_as_txt()
+- 실행 함수
+    - 실측치 값 사용 기준 정의 : CriteriaBuilder.criteria_from_db()
+    - 기본값 사용 기준 정의 : CriteriaBuilder.criteria_from_txt()
+- 다른 스크립트에서 사용
+    - 도메인에 맞는 criteria.txt 파일 요소 추출(딕셔너리 변환) : CriteriaBuilder.load_criteria_from_txt()
+- 설명
+    - 기준 정의가 이상치 검출 중 가장 먼저 실행되어 txt 파일에 저장 필요(txt 파일이 매개체)
+    - 기준 정의 요소를 딕셔너리로 반환하여 이상치 검출 방법 스크립트
+    (outlier_method.py / NightOutlierDetection)에서 사용
+
+**이상치 검출 방식 정의**
+
+- 스크립트 : outlier_method.py
+- 단위 : 1 min
+- 순서
+    - 이상치 검출 방법론 클래스로 구분
+        - 시스템 이상치 :  SystemOutlierDetection
+        - 실측값 이상치 : ValueOutlierDetection
+        - 예측값 이상치 : PredictOutlierDetection
+        - 야간 최소 유량 이상치 : NightOutlierDetection
+- 설명
+    - 이상치 검출 진행 스크립트(outlier_detection.py)에서 해당 클래스를 사용
+
+**도메인에 따른 이상치 검출 진행**
+
+- 스크립트 : outlier_detection.py
+- 단위 : 1 min
+- 순서
+    - 유량 이상치 진행 : FlowRateAnomalyDetector
+    - 수압력 이상치 진행 : PressureAnomalyDetector
+- 설명
+    - 유량 / 수압력 이상치 검출 반환값을 알림용 / 서버용 전달 인자로 사용
+
+**야간 유량 데이터 저장**
+
+- 스크립트 : night_flow_value.py
+- 단위 : 10 min
+- 순서
+    - 현재 시간(클래스 인자)에서 이전 9분간의 데이터를 조회하여 평균 계산 : NightFlowSaver.calculate_and_store_night_flow()
+- 내용
+    - 해당 스크립트는 다른 로직과의 연관성보다는 야간 유량 데이터 저장에 목적을 둠
+
+
+### 💡 LSTM
+
+
+**예측 진행**
+
+- 스크립트 : lstm_processor.py
+- 단위 : 1 hr
+- 순서
+    - 유량 / 압력 실측 데이터 조회(REAL_VAL_TB) : LstmPredictionProcessor.read_real_values_for_lstm()
+    - 데이터 csv 형식 변환 : LstmPredictionProcessor.save_data_for_lstm()
+    - LSTM 예측 진행 : LstmPredictionProcessor.run_lstm_prediction()
+    - 예측 기능 실행 및 데이터 저장(DB / txt) : LstmPredictionProcessor.process_prediction()
+    - 최종 실행 : LstmPredictionProcessor.execute()
+- 설명
+    - 예측 기능 실행을 한 후 예측 결과값은 서버용에 해당하므로 txt 파일 저장이 필요
+    - txt 파일을 재구성(이상치 + 예측)하는 함수 추가로 구현 필요
+
+**모델 학습**
+
+- 스크립트 : lstm_processor.py
+- 단위 : 1 yr
+- 순서
+    - 학습 데이터 생성(모든 REAL_VAl_TB의 유량 / 수압력 데이터 각각 조회) : LstmLearningFlowProcessor.read_all_values()
+    - 데이터 csv 형식 변환 : LstmLearningFlowProcessor.save_data_for_lstm()
+    - 데이터 전처리 : LstmLearningFlowProcessor.run_preprocessing()
+    - 모델 학습 : LstmLearningFlowProcessor.run_training()
+    - 학습 총 실행 : LstmLearningFlowProcessor.execute()
+
+
+### 💡 동시성(Concurrency)
+
+**멀티 프로세싱**
+
+- 스크립트 : concurrency.py
+- 순서
+    - 유량 데이터 기반 모델 학습 : run_flow_learning()
+    - 수압력 데이터 기반 모델 학습 : run_pressure_learning()
+    - 멀티 프로세싱 도입 : run_multiprocessing_learning()
+- 설명
+    - 해당 스크립트에서 멀티 프로세싱을 적용한 후 스케줄링 스크립트(scheduling.py)에서 호출하여 사용
+
+
+### 💡 스케줄링(scheduling)
+
+**스케줄러**
+
+- 스크립트 : scheduling.py
+- 클래스 : SchedulerManager
+- 순서
+    - 실측 데이터 수집 및 이상치 검출 및 전송(1 min) : receive_sensor_data()
+    - 서버 데이터 송신(10 min) : send_server_data()
+    - 야간 유량 데이터 저장(10 min) : save_night_flow()
+    - LSTM 예측 수행(1 hr) : run_lstm_prediction()
+    - 이상치 기준 정의(3 month) : define_criteria()
+    - 모델 학습(1 yr) : train_lstm_model()
+    - 작업 스케줄링 정의 : setup_schedules()
+    - 스케줄링 총 실행 : start()
+- 내용
+    - 스케줄링 스크립트에서는 외부 스크립트 내용을 호출하여 진행
+        - 연결을 위한 인자값 설정 필요
+    - 작업 스케줄링 정의 함수에서 해당 작업 함수들의 작업 관리
