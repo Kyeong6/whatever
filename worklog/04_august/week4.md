@@ -38,7 +38,7 @@ def is_latest_data_included(self):
 
 기존에 야간 유량 시간대를 확인하는 로직을 구현했지만, APScheduler로 해당 시간대에 주기적(`cron`)으로 실행하는 로직을 변경했다. 
 
-### 서버용 데이터 전송: 파일 기반 큐잉 시스템
+### 서버용 데이터 전송: 파일 기반 메시지 큐 방식
 
 해당 기능은 10분을 주기로 텍스트 데이터를 전송한다. 1분 주기인 이상치 데이터를 그대로 사용하면서 예측관련 값은 모두 0이었다가, 1시와 같은 정각일 경우에 예측값이 존재하기 때문에 1시간 주기인 예측 기능과도 밀접한 관련이 있다. 
 
@@ -49,17 +49,23 @@ def is_latest_data_included(self):
   
 <br/>
 
-<img width="957" alt="스크린샷 2024-08-26 오후 3 53 05" src="https://github.com/user-attachments/assets/453b9912-9a26-47c0-9b6a-945f79cf5cf1">
+<img width="1004" alt="스크린샷 2024-08-26 오후 4 33 06" src="https://github.com/user-attachments/assets/d0ea8ec2-8a59-4417-bfaf-f289d1d8afba">
 
 <br/>
 
 **개발 진행**
 
-Kafka의 Kafka Cluster와 같이 큐잉 시스템 개념을 도입해서 `파일 기반 큐잉 시스템 방식` 으로 해당 기능을 진행
+Kafka와 같이 메시지 큐 개념을 도입해서 `파일 기반 메시지 큐 방식` 으로 해당 기능을 진행
 
-- server_data.txt에 값들을 저장
-- 예측값:
+- Kafka 요소의 역할
+    - Producer : 센서 데이터 수집 프로세스
+    - Kafka Cluster : server_data.txt(해당 파일에 값 저장)
+    - Consumer : 10분마다 데이터 전송 프로세스
+- 작동 방식
     - 서버 데이터 전송은 10분 간격이므로, 1시간 정각이 아니면 값을 0으로 보냄
     - 정각일 경우 주기가 1시간인 LSTM 예측을 하여 얻은 flow / pressure 예측값을 concat하여 sensor_data.csv에 넣은 값을 조회하여 전송
-- server_data.txt가 Kafka Cluster와 같은 역할을 하여 큐잉 시스템을 사용했다.
-- 큐잉 시스템에서 데이터의 무결성을 유지하기 위해 `import threading import Lock` 을 사용하여 server_data.txt를 구성할 때 Lock을 걸어 다른 스레드가 해당 파일을 접근하지 못하게 방지
+    - 데이터 전송 후 파일 초기화 진행, 이는 메시지 큐에서 데이터 소비하는 동작과 유사
+- 문제점
+    - 여러 프로세스가 동시에 파일에 접근하려고 할 때 동기화 문제가 발생
+- 해결방법
+    - 데이터의 무결성을 유지하기 위해 `import threading import Lock` 을 사용하여 server_data.txt를 구성할 때 Lock을 걸어 다른 스레드가 해당 파일을 접근하지 못하게 방지
