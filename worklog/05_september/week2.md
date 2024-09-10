@@ -59,3 +59,15 @@ return criteria
 
 8. apscheduler의 interval 매개변수는 days만 제공하고 months, years 제공하지 않아서 days로 months, years 값 수정 진행
 9. scheduling.py의 SchedulerManager 클래스 내부메서드인 init에 데이터베이스 생성 함수를 먼저 설정(파이프라인 흐름상 데이터베이스 테이블 생성이 먼저 진행되어야 한다.)
+
+
+## 9/10
+
+### 테스트 코드 작성
+
+- 현재 시리얼 통신을 이용한 테스트를 진행하지 못하므로 `from_sensor_data.txt` 를 1분에 한 번씩 읽어, 해당 데이터를 가지고 이상치 검출 / LSTM 예측을 수행하는 테스트 코드 작성
+
+- 테스트 코드를 작성하고 난 후 실행 결과 현재 `ModuleNotFoundError: No module named 'core'` 에러가 발생
+- 해당 문제는 프로젝트 운영체제가 Windows이므로, 시스템 변수로 `PYTHONPATH` 를 프로젝트 경로로 설정하여 terminal이 닫혀도 영구적으로 사용가능하도록 설정
+
+- 테스트 진행을 하다보니 어디 부분이 오류가 난지 파악이 어려워 예외처리를 진행한 후 테스트 진행하여 오류를 잡는 방식으로 진행
