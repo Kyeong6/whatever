@@ -20,6 +20,7 @@ WVR 인턴 과정에서의 업무일지 정리 레포입니다. <br/></br>
 |August|4th|[스크립트 연결](https://github.com/Kyeong6/whatever/blob/main/worklog/04_august/week4.md)|
 |September|1st|[예외처리 진행 및 문서화](https://github.com/Kyeong6/whatever/blob/main/worklog/05_september/week1.md)|
 |September|2nd|[테스트 코드 작성 및 에러사항 해결](https://github.com/Kyeong6/whatever/blob/main/worklog/05_september/week2.md)|
+|October|1st|[최종보고서(기술파트) 검토](https://github.com/Kyeong6/whatever/blob/main/worklog/06_october/week1.md)|
 
 <br/>
 
