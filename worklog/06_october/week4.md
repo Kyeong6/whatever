@@ -4,7 +4,7 @@
     - 미니PC pin번호 제거
     - 미니PC(서버) 실행 시 자동으로 기능 수행(python script 실행)
 
-## 10/21
+## 10/21~25
 
 ### 피에스글로벌 요청사항
 
@@ -64,5 +64,88 @@ python main.py
 
 **변경된 조건**
 
-1. cnt가 10이 되지 못하고, current_minute가 “1, 11, 21, 31, 41, 51”이 되면(분단위 정각) cnt는 0으로 초기화 진행
-2. cnt가 10이 되고, current_minnute가 “1, 11, 21, 31, 41, 51”이 될 경우 서버용 데이터 전송 수행
+1. current_minute가 정각(0분, 10분 …) 및 cnt가 10이 될 경우 current_minnute가 “1, 11, 21, 31, 41, 51”와 같이 “정각+1분”에 서버용 데이터 전송 수행, 이후 cnt는 초기화 진행
+2. current_minute가 정각이 되었지만, cnt가 10이 되지 못할 경우(즉, 서버 실행 직후 서버 데이터는 전송하지 않으려는 의도) “정각+1분”에 서버용 데이터 전송 수행하지 않음, 이후  cnt는 초기화 진행
+
+**결론**
+
+- 서버가 실행된 직후에는 데이터를 전송하지 않고, 정확히 `분+1`에 도달했을 때, 그리고 데이터 수집 횟수가 10번을 채웠을 때만 데이터를 전송 진행
+
+**도식화**
+
+![서버실행-도식화](https://github.com/user-attachments/assets/00a8db2d-b7e2-4926-91f4-922bbfbe0f53)
+
+- 현재 코드
+
+```python
+# 데이터 수집 횟수 추적 카운터(__init__에 정의)
+self.data_count = 0
+
+# 수신받은 데이터 시간 확인하여 '분' 값 추출
+timestamp = datetime.strptime(datetime_str, '%Y-%m-%d %H:%M')
+current_minute = timestamp.minute
+
+# 정각 + 1인 경우에 예측값 DB 조회
+if current_minute == 1:
+    # 예측 데이터 조회
+    flow_preds, pressure_preds = self.get_all_predictions()
+    
+# 정각 + 1이 아닌 경우 예측 관련 값 0으로 설정
+else:
+    flow_preds = ["N"] * 7
+    pressure_preds = ["N"] * 7  
+    
+# 데이터 카운터 증가 및 확인
+self.data_count += 1
+if self.data_count >= 10:
+    # 10회 데이터 수집 후 tenmin 파일에 기록 (예측값 포함)
+    self.ten_minute_transmitter.append_to_server_data(
+        sensor_id, datetime_str, flow_rate, pressure,
+        *flow_outlier_data, *pressure_outlier_data,
+        flow_preds=flow_preds, pressure_preds=pressure_preds
+    )
+    self.data_count = 0
+```
+
+기존 코드를 서버 실행 후 예측 기능 수행 로직(알고리즘)에 맞게 변경한 결과는 다음과 같다.
+
+- 변경 코드
+
+```python
+# 데이터 수집 횟수 추적 카운터(__init__에 정의)
+self.data_count = 0
+
+# 수신받은 데이터 시간 확인하여 '분' 값 추출
+timestamp = datetime.strptime(datetime_str, '%Y-%m-%d %H:%M')
+current_minute = timestamp.minute
+
+# '정각(분)+1'일 때만 예측 데이터를 조회
+if current_minute in {1, 11, 21, 31, 41, 51}:
+    # 예측값 조회
+    flow_preds, pressure_preds = self.get_all_predictions()
+else:
+    # 예측 데이터가 필요한 시간이 아니면, 기본값으로 설정
+    flow_preds = ["N"] * 7
+    pressure_preds = ["N"] * 7
+
+# 데이터 수집 횟수를 증가, 수집 횟수 10번인지 확인
+self.data_count += 1
+
+# '정각(분)+1' 조건과 데이터 수집 횟수 조건을 모두 만족할 때만 서버용 데이터 전송
+if current_minute in {1, 11, 21, 31, 41, 51} and self.data_count >= 10:
+    # 서버 데이터 전송 로직
+    self.ten_minute_transmitter.append_to_server_data(
+        sensor_id, datetime_str, flow_rate, pressure,
+        *flow_outlier_data, *pressure_outlier_data,
+        flow_preds=flow_preds, pressure_preds=pressure_preds
+    )
+    # 전송 후 카운터 초기화
+    self.data_count = 0  
+    
+# 아직 데이터 수집 횟수가 부족하거나, '정각(분)+1'이 아닐 경우
+else:
+		# 데이터 전송 없이 카운터만 초기화 진행(시간은 맞을 경우)
+    if current_minute in {1, 11, 21, 31, 41, 51}:
+        self.data_count = 0  
+
+```
