@@ -29,13 +29,9 @@ WVR 인턴 과정에서의 업무일지 정리 레포입니다. <br/></br>
 ## 학습 내용
 |Category|Detail|Description|
 |------|---|---|
-|Database|SQLite3|[SQLite3 학습](https://pool-roast-1d0.notion.site/Sqlite3-7b90856277074ce6a2af5b8cd52c5107?pvs=4)|
-|Scheduler|APScheduler|[APScheduler 학습](https://pool-roast-1d0.notion.site/APScheduler-11c5a56e26e54db19eaf2456c66e43cf?pvs=4)|
-|OS|Concurrency|[Concurrency 학습](https://pool-roast-1d0.notion.site/Concurrency-Parallelism-bd9a5eade0024053858f3258ec4750c6?pvs=4)|
-|Network|Serial|[PySerial 학습](https://pool-roast-1d0.notion.site/Serial-305cbb863593487b8bf1981a49cb6632?pvs=4)|
-|System|Message Queue|[Message Queue 학습](https://pool-roast-1d0.notion.site/Message-Queue-86ccb1277ec3440bb2ebe4643c5dd4c1?pvs=4)|
+|OS|Concurrency|[동시성 학습](https://pool-roast-1d0.notion.site/Concurrency-Parallelism-bd9a5eade0024053858f3258ec4750c6?pvs=4)|
+|Network|Serial|[시리얼 통신 학습](https://pool-roast-1d0.notion.site/Serial-305cbb863593487b8bf1981a49cb6632?pvs=4)|
+|Data Structure|Queue|[큐 학습](https://pool-roast-1d0.notion.site/Message-Queue-86ccb1277ec3440bb2ebe4643c5dd4c1?pvs=4)|
+|Design Pattern|Facade|[퍼사드 패턴 학습](https://pool-roast-1d0.notion.site/Design-Pattern-Facade-16b3ed8a11d080cda529fab0d1be1ecc?pvs=4)|
 
 <br/>
-
-## Workflow
-<img src="https://github.com/user-attachments/assets/96b444ae-63d9-4d6f-91a5-b0d7c925e5ca" alt="워크플로"/>
